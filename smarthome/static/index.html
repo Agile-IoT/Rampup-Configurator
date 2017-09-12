@@ -1,0 +1,357 @@
+<!-- 
+Copyright (C) 2017 TUGraz.
+All rights reserved. This program and the accompanying materials
+are made available under the terms of the Eclipse Public License v1.0
+which accompanies this distribution, and is available at
+http://www.eclipse.org/legal/epl-v10.html
+
+Contributors:
+    TUGraz - initial API and implementation
+ -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smarthome Configurator</title>
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+</head>
+<body>
+<h1>Smarthome Configurator</h1>
+<p>Welcome to the Smarthome Configurator. Below you can specify your preferences.</p>
+
+<h2>User Requirements</h2>
+<p>Here you can specify what is important for your Smarthome.</p>
+
+<div class="panel-group form-group">
+	<div class="row">
+		<div class="col-lg-4 col-md-4 col-sm-4">
+			<div class="panel panel-default">
+				<div class="panel-heading">Are comfort / control needed?</div>
+				<div class="panel-body">
+					<select class="form-control" id="isComfortControlNeeded">
+						<option value="">No preference</option>
+						<option value="yes">Yes</option>
+						<option value="no">No</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4 col-md-4 col-sm-4">
+			<div class="panel panel-default">
+				<div class="panel-heading">Is energy saving needed?</div>
+				<div class="panel-body">
+					<select class="form-control" id="isEnergySavingNeeded">
+						<option value="">No preference</option>
+						<option value="yes">Yes</option>
+						<option value="no">No</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4 col-md-4 col-sm-4">
+			<div class="panel panel-default">
+				<div class="panel-heading">Is health support needed?</div>
+				<div class="panel-body">
+					<select class="form-control" id="isHealthSupportNeeded">
+						<option value="">No preference</option>
+						<option value="yes">Yes</option>
+						<option value="no">No</option>
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-4 col-md-4 col-sm-4">
+			<div class="panel panel-default">
+				<div class="panel-heading">Are safety / security needed?</div>
+				<div class="panel-body">
+					<select class="form-control" id="isSafetySecurityNeeded">
+						<option value="">No preference</option>
+						<option value="yes">Yes</option>
+						<option value="no">No</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4 col-md-4 col-sm-4">
+			<div class="panel panel-default">
+				<div class="panel-heading">Is cost important?</div>
+				<div class="panel-body">
+					<select class="form-control" id="isCostImportant">
+						<option value="">No preference</option>
+						<option value="yes">Yes</option>
+						<option value="no">No</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4 col-md-4 col-sm-4">
+			<div class="panel panel-default">
+				<div class="panel-heading">Is stability needed?</div>
+				<div class="panel-body">
+					<select class="form-control" id="isStabilityNeeded">
+						<option value="">No preference</option>
+						<option value="yes">Yes</option>
+						<option value="no">No</option>
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-4 col-md-4 col-sm-4">
+			<div class="panel panel-default">
+				<div class="panel-heading">User sensible to electric smog?</div>
+				<div class="panel-body">
+					<select class="form-control" id="isSensibleToElectricSmog">
+						<option value="">No preference</option>
+						<option value="yes">Yes</option>
+						<option value="no">No</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4 col-md-4 col-sm-4">
+			<div class="panel panel-default">
+				<div class="panel-heading">Preferred installation?</div>
+				<div class="panel-body">
+					<select class="form-control" id="installation">
+						<option value="">No preference</option>
+						<option value="diy">Do it yourself</option>
+						<option value="professional">Professional</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4 col-md-4 col-sm-4">
+			<div class="panel panel-default">
+				<div class="panel-heading">Preferred communication?</div>
+				<div class="panel-body">
+					<select class="form-control" id="communication">
+						<option value="">No preference</option>
+						<option value="wired">Wired</option>
+						<option value="wireless">Wireless</option>
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<h2>General Smarthome Settings</h2>
+<p>Here you can specify the current properties of your future Smarthome.</p>
+
+<div class="panel-group form-group">
+	<div class="row">
+		<div class="col-lg-6 col-md-6 col-sm-6">
+			<div class="panel panel-default">
+				<div class="panel-heading">What's the building material?</div>
+				<div class="panel-body">
+					<select class="form-control" id="builtWith">
+						<option value="steel">Steel & Concrete</option>
+						<option value="wood">Wood</option>
+						<option value="other">Other</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-6">
+			<div class="panel panel-default">
+				<div class="panel-heading">Are tubes installed?</div>
+				<div class="panel-body">
+					<select class="form-control" id="areTubesInstalled">
+						<option value="yes">Yes</option>
+						<option value="no">No</option>
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<h2>Rooms</h2>
+<p>Here you can add and remove rooms to your Smarthome</p>
+
+<div class="panel-group">
+	<div class="panel panel-default">
+		<div class="panel-heading"><div class="row-fluid"><div class="span6 pull-left">Rooms</div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-add-room"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add</button></div></div></div>
+		<div class="panel-body">
+			<div id="room-container">
+				
+			</div>
+		</div>
+	</div>
+</div>
+
+<button type="button" class="btn btn-primary btn-block" id="button-get-configs">Get configurations</button>
+
+<h1>Available Configurations</h1>
+<p>Here you can see up to ten possible configurations according to your input.</p>
+
+<div id="solutions"></div>
+
+<script>
+function standardizeNames(name) {
+	switch(name) {
+	case 'steel':
+		return 'Steel & Concrete';
+	case 'wood':
+		return 'Wood';
+	case 'other':
+		return 'Other';
+	case 'wired':
+		return 'Wired';
+	case 'wireless':
+		return 'Wireless';
+	case 'oven':
+		return 'Oven';
+	case 'stove':
+		return 'Stove';
+	case 'microwave':
+		return 'Microwave';
+	case 'dishwasher':
+		return 'Dishwasher';
+	case 'fridge':
+		return 'Fridge';
+	case 'radio':
+		return 'Radio';
+	case 'freezer':
+		return 'Freezer';
+	case 'tv':
+		return 'TV';
+	case 'console':
+		return 'Console';
+	case 'router':
+		return 'Router';
+	case 'computer':
+		return 'Computer';
+	case 'Server':
+		return 'Server';
+	case 'washingmachine':
+		return 'Washing Machine';
+	case 'kitchen':
+		return 'Kitchen';
+	case 'bathroom':
+		return 'Bathroom';
+	case 'livingroom':
+		return 'Livingroom';
+	case 'bedroom':
+		return 'Bedroom';
+	case 'corridor':
+		return 'Corridor';
+	case 'diy':
+		return 'Do it yourself';
+	case 'professional':
+		return 'Professional';
+	default:
+		return '<i>undefined</i>';
+	}
+}
+
+$('body').on('click', '#button-add-room', function() {
+	$('#room-container').append('<div class="panel-group"><div class="panel panel-default"><div class="panel-heading"><div class="row-fluid"><div class="span6 pull-left"><select class="form-control" id="select-room-type"><option value="kitchen">Kitchen</option><option value="bathroom">Bathroom</option><option value="livingroom">Livingroom</option><option value="bedroom">Bedroom</option><option value="corridor">Corridor</option><option value="other">Other</option></select></div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-remove-room"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Remove</button></div></div></div><div class="panel-body"><h3>Home Appliances</h3><div class="row-fluid"><div class="span6 pull-left"><p>Here you can add, remove and configure Home Appliances for your Smarthome</p></div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-add-homeappliance"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add</button></div></div><div id="homeappliance-container"></div></div></div></div>');
+}).on('click', '#button-remove-room', function() {
+	var divRoomContainer = $(this).parent().parent().parent().parent().parent();
+	divRoomContainer.remove();
+}).on('click', '#button-add-homeappliance', function() {
+	var divHomeApplianceContainer = $(this).parent().parent().parent().find('#homeappliance-container');
+	divHomeApplianceContainer.append('<div class="panel-group"><div class="panel panel-default"><div class="panel-heading"><div class="row-fluid"><div class="span6 pull-left"><select class="form-control" id="select-homeappliance-type"><option value="oven">Oven</option><option value="stove">Stove</option><option value="microwave">Microwave</option><option value="dishwasher">Dishwasher</option><option value="fridge">Fridge</option><option value="radio">Radio</option><option value="freezer">Freezer</option><option value="tv">TV</option><option value="console">Console</option><option value="router">Router</option><option value="computer">Computer</option><option value="server">Server</option><option value="washingmachine">Washing Machine</option></select></div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-remove-homeappliance"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Remove</button></div></div></div><div class="panel-body"></div></div></div>');
+}).on('click', '#button-remove-homeappliance', function() {
+	var divHomeApplianceContainer = $(this).parent().parent().parent().parent().parent();
+	divHomeApplianceContainer.remove();
+}).on('click', '#button-get-configs', function() {
+	var userRequirementsObject = {
+			isComfortControlNeeded: $('select#isComfortControlNeeded').val(),
+			isEnergySavingNeeded: $('select#isEnergySavingNeeded').val(),
+			isHealthSupportNeeded: $('select#isHealthSupportNeeded').val(),
+			isSafetySecurityNeeded: $('select#isSafetySecurityNeeded').val(),
+			isCostImportant: $('select#isCostImportant').val(),
+			isStabilityNeeded: $('select#isStabilityNeeded').val(),
+			isSensibleToElectricSmog: $('select#isSensibleToElectricSmog').val(),
+			installation: $('select#installation').val(),
+			smartHome: {
+				communication: $('select#communication').val(),
+				builtWith: $('select#builtWith').val(),
+				areTubesInstalled: $('select#areTubesInstalled').val(),
+				rooms: []
+			}
+	};
+	
+	if ($('div#room-container').children().length != 0) {
+		// TODO rooms and home appliances
+		$.each($('div#room-container').children(), function(i, room) {
+			roomObject = {
+					type: $(room).find('select#select-room-type').val(),
+					homeAppliances: []
+			};
+			
+			$.each($(room).find('div#homeappliance-container').children(), function(j, homeAppliance) {
+				homeApplianceObject = {
+						type: $(homeAppliance).find('select#select-homeappliance-type').val()
+				}
+				roomObject.homeAppliances[j] = homeApplianceObject;
+			});
+			
+			userRequirementsObject.smartHome.rooms[i] = roomObject;
+		});
+		
+	 	$.ajax({
+			url: '../rest/solver/',
+			datatype: 'application/json',
+			type: 'POST',
+			contentType: 'application/json; charset=utf-8',
+			data: JSON.stringify(userRequirementsObject),
+			success: function(data) {
+				var solutionsCode = '';
+				
+				$.each(data, function(s, solution) {
+					solutionsCode += '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading">Solution ' + (s + 1) + '</div><div class="panel-body"><h2>User Requirements</h2><ul>';
+					solutionsCode += '<li>Comfort / control activated: <b>' + solution.isComfortControlNeeded + '</b></li>';
+					solutionsCode += '<li>Energy saving activated: <b>' + solution.isEnergySavingNeeded + '</b></li>';
+					solutionsCode += '<li>Health support activated: <b>' + solution.isHealthSupportNeeded + '</b></li>';
+					solutionsCode += '<li>Safety / security activated: <b>' + solution.isSafetySecurityNeeded + '</b></li>';
+					solutionsCode += '<li>Low cost: <b>' + solution.isCostImportant + '</b></li>';
+					solutionsCode += '<li>High stability: <b>' + solution.isStabilityNeeded + '</b></li>';
+					solutionsCode += '<li>Reduce electric smog: <b>' + solution.isSensibleToElectricSmog + '</b></li>';
+					solutionsCode += '<li>Installation mode: <b>' + standardizeNames(solution.installation) + '</b></li>';
+					solutionsCode += '<li>Communication mode: <b>' + standardizeNames(solution.smartHome.communication) + '</b></li>';
+					solutionsCode +='</ul><h2>General Smarthome Settings</h2><ul>';
+					solutionsCode += '<li>Building material: <b>' + standardizeNames(solution.smartHome.builtWith) + '</b></li>';
+					solutionsCode += '<li>Tube installation: <b>' + solution.smartHome.areTubesInstalled + '</b></li>';
+					solutionsCode += '</ul><h2>Rooms</h2>';
+					
+					$.each(solution.smartHome.rooms, function(r, room) {
+						solutionsCode += '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading">' + standardizeNames(room.type) + '</div><div class="panel-body">';
+						
+						$.each(room.homeAppliances, function(h, homeAppliance) {
+							solutionsCode += '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading">' + standardizeNames(homeAppliance.type) + '</div><div class="panel-body"><ul>';
+							
+							solutionsCode += '<li>Always on: <b>' + homeAppliance.isAlwaysOn + '</b></li>';
+							solutionsCode += '<li>Dangerous: <b>' + homeAppliance.isDangerous + '</b></li>';
+							
+							solutionsCode += '</ul></div></div></div>';
+						});
+						
+						solutionsCode += '</div></div></div>';
+					});
+					
+					solutionsCode += '</div></div></div>';
+				});
+				
+				$('div#solutions').html(solutionsCode);
+			}
+		});
+	} else {
+		alert('You have not added any rooms!');
+	}
+});
+
+</script>
+</body>
+</html>

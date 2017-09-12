@@ -1,0 +1,618 @@
+<!-- 
+Copyright (C) 2017 TUGraz.
+All rights reserved. This program and the accompanying materials
+are made available under the terms of the Eclipse Public License v1.0
+which accompanies this distribution, and is available at
+http://www.eclipse.org/legal/epl-v10.html
+
+Contributors:
+    TUGraz - initial API and implementation
+ -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pollution Monitoring Configurator</title>
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+</head>
+<body>
+<h1>Pollution Monitoring Configurator</h1>
+<p>Welcome to the Pollution Monitoring Configurator. Below you can specify the preferences for you monitoring station.</p>
+
+<h2>Monitoring Station</h2>
+<p>Here you can specify what is important for your Monitoring Station.</p>
+
+<div class="panel-group form-group">
+	<div class="row">
+		<div class="col-lg-6 col-md-6 col-sm-6">
+			<div class="panel panel-default">
+				<div class="panel-heading">Communication</div>
+				<div class="panel-body">
+					<select class="form-control" id="communication">
+						<option value="">No preference</option>
+						<option value="wired">Wired</option>
+						<option value="wireless">Wireless</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-6">
+			<div class="panel panel-default">
+				<div class="panel-heading">Enclosure</div>
+				<div class="panel-body">
+					<select class="form-control" id="enclosure">
+						<option value="">No preference</option>
+						<option value="standard">Standard</option>
+						<option value="strugged">Rugged</option>
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-6 col-md-6 col-sm-6">
+			<div class="panel panel-default">
+				<div class="panel-heading">Local storage</div>
+				<div class="panel-body">
+					<select class="form-control" id="localStorage">
+						<option value="">No preference</option>
+						<option value="yes">Yes</option>
+						<option value="no">No</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-6">
+			<div class="panel panel-default">
+				<div class="panel-heading">Cloud storage</div>
+				<div class="panel-body">
+					<select class="form-control" id="cloudStorage">
+						<option value="">No preference</option>
+						<option value="yes">Yes</option>
+						<option value="no">No</option>
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<h2>Deployment Environments</h2>
+<p>Here you can add and remove deployment environments to your monitoring station.</p>
+
+<div class="panel-group">
+	<div class="panel panel-default">
+		<div class="panel-heading"><div class="row-fluid"><div class="span6 pull-left">Deployment Environments</div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-add-deployment-environment"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add</button></div></div></div>
+		<div class="panel-body">
+			<div id="deployment-environment-container">
+				
+			</div>
+		</div>
+	</div>
+</div>
+
+<button type="button" class="btn btn-primary btn-block" id="button-get-configs">Get configurations</button>
+
+<h1>Available Configurations</h1>
+<p>Here you can see up to ten possible configurations according to your input.</p>
+
+<div id="solutions"></div>
+
+<script>
+function standardizeNames(name) {
+	switch(name) {
+	case 'a':
+		return 'a';
+	case 'active':
+		return 'active';
+	case 'aridarea':
+		return 'arid area';
+	case 'b':
+		return 'b';
+	case 'bar':
+		return 'bar';
+	case 'ch2o':
+		return 'CH<sub>2</sub>O';
+	case 'ch4':
+		return 'CH<sub>4</sub>';
+	case 'celsiusdegrees':
+		return '°C';
+	case 'chemical':
+		return 'chemical';
+	case 'childrenspace':
+		return 'children space';
+	case 'cl2':
+		return 'Cl<sub>2<sub>';
+	case 'co':
+		return 'CO';
+	case 'co2':
+		return 'CO<sub>2</sub>';
+	case 'cov':
+		return 'COV';
+	case 'countbased':
+		return 'count based';
+	case 'country':
+		return 'country';
+	case 'countryfield':
+		return 'country / field';
+	case 'countryside':
+		return 'countryside';
+	case 'countsperminute':
+		return 'counts per minute';
+	case 'dangerous':
+		return 'dangerous';
+	case 'dbvonm':
+		return 'dBVONM'
+	case 'electrochemical':
+		return 'electrochemical';
+	case 'eto':
+		return 'EtO';
+	case 'explosive':
+		return 'explosive';
+	case 'g':
+		return 'G';
+	case 'geiger':
+		return 'geiger';
+	case 'geigerformula':
+		return 'geiger formula';
+	case 'ghz800':
+		return '800 GHz';
+	case 'gym':
+		return 'gym';
+	case 'h2':
+		return 'H<sub>2</sub>';
+	case 'h2s':
+		return 'H<sub>2</sub>S';
+	case 'hcl':
+		return 'HCl';
+	case 'hcn':
+		return 'HCN';
+	case 'heavy':
+		return 'heavy';
+	case 'hospital':
+		return 'hospital';
+	case 'hz50':
+		return '50 Hz';
+	case 'indoor':
+		return 'indoor';
+	case 'industrial':
+		return 'industrial';
+	case 'industry':
+		return 'industry';
+	case 'infrared':
+		return 'infrared';
+	case 'infraredpyro':
+		return 'infrared pyro';
+	case 'infrredthermop':
+		return 'infrared thermo p';
+	case 'ipa':
+		return 'IPA';
+	case 'library':
+		return 'library';
+	case 'light':
+		return 'light';
+	case 'manufacturerspecific':
+		return 'manufacturer specific';
+	case 'medium':
+		return 'medium';
+	case 'militesla':
+		return 'millitela';
+	case 'mixed':
+		return 'mixed';
+	case 'monument':
+		return 'monument';
+	case 'no3':
+		return 'NO<sub>3</sub>';
+	case 'nh3':
+		return 'NH<sub>3</sub>';
+	case 'no':
+		return 'no';
+	case 'none':
+		return 'none';
+	case 'notapplicable':
+		return 'not applicable';
+	case 'notneeded':
+		return 'not needed';
+	case 'o3':
+		return 'O<sub>3</sub>';
+	case 'other':
+		return 'other';
+	case 'outdoor':
+		return 'outdoor';
+	case 'particlesperminute':
+		return 'particles per minute';
+	case 'passive':
+		return 'passive';
+	case 'percentage':
+		return 'percentage';
+	case 'ph3':
+		return 'PH<sub>3</sub>';
+	case 'photoionisation':
+		return 'photoionisation';
+	case 'pm0':
+		return 'PM0';
+	case 'pm1':
+		return 'PM1';
+	case 'pm10':
+		return 'PM10';
+	case 'pm25':
+		return 'PM2.5';
+	case 'pm5':
+		return 'pm5';
+	case 'poisonous':
+		return 'poisonous';
+	case 'ppm':
+		return 'ppm';
+	case 'pub':
+		return 'pub';
+	case 'publicoffice':
+		return 'public office';
+	case 'radon':
+		return 'radon';
+	case 'residential':
+		return 'residential';
+	case 'road':
+		return 'road';
+	case 'school':
+		return 'school';
+	case 'seaside':
+		return 'seaside';
+	case 'sensitivearea':
+		return 'sensitive area';
+	case 'shop':
+		return 'shop';
+	case 'siderurgic':
+		return 'siderurgic';
+	case 'sme':
+		return 'SME';
+	case 'so2':
+		return 'SO<sub>2</sub>';
+	case 'standard':
+		return 'standard';
+	case 'strugged':
+		return 'rugged';
+	case 'suburban':
+		return 'suburban';
+	case 'toxic':
+		return 'toxic';
+	case 'ugm3':
+		return '&micro;g/m<sup>3</sup>';
+	case 'urban':
+		return 'urban';
+	case 'tropicalarea':
+		return 'tropical area';
+	case 'wired':
+		return 'wired';
+	case 'wireless':
+		return 'wireless';
+	case 'yes':
+		return 'yes';
+	default:
+		return '<i>undefined (' + name + ')</i>';
+	}
+}
+
+$('body').on('click', '#button-add-deployment-environment', function() {
+	var htmlToAppend = '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading"><div class="row-fluid"><div class="span6 pull-left">Deployment Environment</div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-remove-deployment-environment"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Remove</button></div></div></div><div class="panel-body">';
+	htmlToAppend += '<label for="select-deployment-environment-type">Type</label><select class="form-control" id="select-deployment-environment-type"><option value="">No preference</option><option value="indoor">Indoor</option><option value="outdoor">Outdoor</option><option value="mixed">Mixed</option></select>';
+	htmlToAppend += '<label for="select-deployment-environment-context">Context</label><select class="form-control" id="select-deployment-environment-context"><option value="">No preference</option><option value="seaside">Seaside</option><option value="country">Country</option><option value="tropicalarea">Tropical area</option><option value="aridarea">Arid area</option><option value="other">Other</option></select>';
+	htmlToAppend += '<label for="select-deployment-environment-location-type">Location Type</label><select class="form-control" id="select-deployment-environment-location-type"><option value="">No preference</option><option value="urban">Urban</option><option value="suburban">Suburban</option><option value="countryside">Countryside</option><option value="residential">Residential</option><option value="industrial">Industrial</option><option value="other">Other</option></select>';
+	htmlToAppend += '<h3>Areas</h3><div class="row-fluid"><div class="span6 pull-left"><p>Here you can add, remove and configure areas for your deployment environment</p></div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-add-area"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add</button></div></div><div id="area-container"></div></div></div></div>';
+	$('#deployment-environment-container').append(htmlToAppend);
+}).on('click', '#button-remove-deployment-environment', function() {
+	var divDeploymentEnvironmentContainer = $(this).parent().parent().parent().parent().parent();
+	divDeploymentEnvironmentContainer.remove();
+}).on('click', '#button-add-area', function() {
+	var divAreaContainer = $(this).parent().parent().parent().find('#area-container');
+	var htmlToAppend = '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading"><div class="row-fluid"><div class="span6 pull-left">Area</div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-remove-area"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Remove</button></div></div></div><div class="panel-body">';
+	htmlToAppend += '<label for="select-area-type">Type</label><select class="form-control" id="select-area-type"><option value="">No preference</option><option value="indoor">Indoor</option><option value="outdoor">Outdoor</option><option value="mixed">Mixed</option></select>';
+	htmlToAppend += '<label for="select-area-category">Category</label><select class="form-control" id="select-area-category"><option value="">No preference</option><option value="industry">Industry</option><option value="shop">Shop</option><option value="gym">Gym</option><option value="pub">Pub</option><option value="library">Library</option><option value="hospital">Hospital</option><option value="residential">Residential</option><option value="school">School</option><option value="publicoffice">Public Office</option><option value="monument">Monument</option><option value="road">Road</option><option value="countryfield">Country Field</option><option value="sensitivearea">Sensitive Area</option><option value="childrenspace">Children Space</option><option value="other">Other</option></select>';
+	htmlToAppend += '<label for="select-area-prefabricatedbuilding">Prefabricated Building</label><select class="form-control" id="select-area-prefabricatedbuilding"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-area-vehicletraffic">Vehicle Traffic</label><select class="form-control" id="select-area-vehicletraffic"><option value="">No preference</option><option value="none">None</option><option value="light">Light</option><option value="medium">Medium</option><option value="heavy">Heavy</option></select>';
+	htmlToAppend += '<label for="select-area-industrialtype">Industrial Type</label><select class="form-control" id="select-area-industrialtype"><option value="">No preference</option><option value="notapplicable">Not Applicable</option><option value="chemical">Chemical</option><option value="siderurgic">Siderurgic</option><option value="heavy">Heavy</option><option value="sme">SME</option></select>';
+	htmlToAppend += '<label for="select-area-pollutedsoil">Polluted Soil</label><select class="form-control" id="select-area-pollutedsoil"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-area-floor">Floor</label><select class="form-control" id="select-area-floor"><option value="">No preference</option><option value="0">Ground</option><option value="1">Upper</option></select>';
+	htmlToAppend += '<label for="select-area-controlledarea">Controlled Area</label><select class="form-control" id="select-area-controlledarea"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-area-airconditioning">Air Conditioning</label><select class="form-control" id="select-area-airconditioning"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-area-heatingsystem">Heating System</label><select class="form-control" id="select-area-heatingsystem"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-area-windows">Windows</label><select class="form-control" id="select-area-windows"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-area-smokepresence">Smoke Presence</label><select class="form-control" id="select-area-smokepresence"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-area-moldpresence">Mold Presence</label><select class="form-control" id="select-area-moldpresence"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-area-dustyarea">Dusty Area</label><select class="form-control" id="select-area-dustyarea"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<h3>Environmental Conditions</h3><div class="row-fluid"><div class="span6 pull-left"><p>Here you can add, remove and configure environmental conditions for your area</p></div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-add-environmental-condition"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add</button></div></div><div id="environmental-condition-container"></div>';
+	htmlToAppend += '<h3>Wall Types</h3><div class="row-fluid"><div class="span6 pull-left"><p>Here you can add, remove and configure wall types for your area</p></div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-add-wall-type"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add</button></div></div><div id="wall-type-container"></div>';
+	htmlToAppend += '</div></div></div>';
+	divAreaContainer.append(htmlToAppend);
+}).on('click', '#button-remove-area', function() {
+	var divAreaContainer = $(this).parent().parent().parent().parent().parent();
+	divAreaContainer.remove();
+}).on('click', '#button-add-environmental-condition', function() {
+	var divEnvironmentalConditionContainer = $(this).parent().parent().parent().find('#environmental-condition-container');
+	var htmlToAppend = '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading"><div class="row-fluid"><div class="span6 pull-left">Environmental Condition</div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-remove-environmental-condition"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Remove</button></div></div></div><div class="panel-body">';
+	htmlToAppend += '<label for="select-environmental-condition-humidity">Humidity (0-10)</label><input type="number" class="form-control" id="select-environmental-condition-humidity" min="0" max="10"></input>';
+	htmlToAppend += '<label for="select-environmental-condition-windspeed">Wind Speed (0-10)</label><input type="number" class="form-control" id="select-environmental-condition-windspeed" min="0" max="10"></input>';
+	htmlToAppend += '<label for="select-environmental-condition-rain">Rain</label><select class="form-control" id="select-environmental-condition-rain"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-environmental-condition-dust">Dust</label><select class="form-control" id="select-environmental-condition-dust"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-environmental-condition-averagetemperature">Average Temperature (-50..50)</label><input type="number" class="form-control" id="select-environmental-condition-averagetemperature" min="-50" max="50"></input>';
+	htmlToAppend += '<label for="select-environmental-condition-snow">Snow</label><select class="form-control" id="select-environmental-condition-snow"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-environmental-condition-ice">Ice</label><select class="form-control" id="select-environmental-condition-ice"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-environmental-condition-vibrations">Vibrations</label><select class="form-control" id="select-environmental-condition-vibrations"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-environmental-condition-averagepressure">Average Pressure (0..10)</label><input type="number" class="form-control" id="select-environmental-condition-averagepressure" min="0" max="10"></input>';
+	// TODO
+	htmlToAppend += '</div></div></div>';
+	divEnvironmentalConditionContainer.append(htmlToAppend);
+}).on('click', '#button-remove-environmental-condition', function() {
+	var divEnvironmentalConditionContainer = $(this).parent().parent().parent().parent().parent();
+	divEnvironmentalConditionContainer.remove();
+}).on('click', '#button-add-wall-type', function() {
+	var divWallTypeContainer = $(this).parent().parent().parent().find('#wall-type-container');
+	var htmlToAppend = '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading"><div class="row-fluid"><div class="span6 pull-left">Wall Type</div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-remove-wall-type"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Remove</button></div></div></div><div class="panel-body">';
+	htmlToAppend += '<label for="select-wall-type-wallpaper">Wallpaper</label><select class="form-control" id="select-wall-type-wallpaper"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-wall-type-plasticcladding">Plastic Cladding</label><select class="form-control" id="select-wall-type-plasticcladding"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-wall-type-woodenpanels">Wooden Panels</label><select class="form-control" id="select-wall-type-woodenpanels"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-wall-type-moquette">Moquette</label><select class="form-control" id="select-wall-type-moquette"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-wall-type-tiles">Tiles</label><select class="form-control" id="select-wall-type-tiles"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-wall-type-plaster">Plaster</label><select class="form-control" id="select-wall-type-plaster"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '</div></div></div>';
+	divWallTypeContainer.append(htmlToAppend);
+}).on('click', '#button-remove-wall-type', function() {
+	var divWallTypeContainer = $(this).parent().parent().parent().parent().parent();
+	divWallTypeContainer.remove();
+}).on('click', '#button-get-configs', function() {
+	$('div#solutions').html('');
+	
+	var monitoringStationObject = {
+			communication: $('select#communication').val(),
+			localStorage: $('select#localStorage').val(),
+			cloudStorage: $('select#cloudStorage').val(),
+			enclosure: $('select#enclosure').val(),
+			deploymentEnvironments: []
+	};
+	
+	if ($('div#deployment-environment-container').children().length != 0) {
+		$.each($('div#deployment-environment-container').children(), function(i, deploymentEnvironment) {
+			deploymentEnvironmentObject = {
+					type: $(deploymentEnvironment).find('select#select-deployment-environment-type').val(),
+					context: $(deploymentEnvironment).find('select#select-deployment-environment-context').val(),
+					locationType: $(deploymentEnvironment).find('select#select-deployment-environment-location-type').val(),
+					areas: []
+			};
+			
+			$.each($(deploymentEnvironment).find('div#area-container').children(), function(j, area) {
+				areaObject = {
+						type: $(area).find('select#select-area-type').val(),
+						category: $(area).find('select#select-area-category').val(),
+						prefabricatedBuilding: $(area).find('select#select-area-prefabricatedbuilding').val(),
+						vehicleTraffic: $(area).find('select#select-area-vehicletraffic').val(),
+						industrialType: $(area).find('select#select-area-industrialtype').val(),
+						pollutedSoil: $(area).find('select#select-area-pollutedsoil').val(),
+						floor: $(area).find('select#select-area-floor').val(),
+						controlledArea: $(area).find('select#select-area-controlledarea').val(),
+						airConditioning: $(area).find('select#select-area-airconditioning').val(),
+						heatingSystem: $(area).find('select#select-area-heatingsystem').val(),
+						windows: $(area).find('select#select-area-windows').val(),
+						smokePresence: $(area).find('select#select-area-smokepresence').val(),
+						moldPresence: $(area).find('select#select-area-moldpresence').val(),
+						dustyArea: $(area).find('select#select-area-dustyarea').val(),
+						environmentalConditions: [],
+						wallTypes: []
+				};
+				
+				$.each($(area).find('div#environmental-condition-container').children(), function(k, environmentalCondition) {
+					environmentalConditionObject = {
+							humidity: $(environmentalCondition).find('input#select-environmental-condition-humidity').val(),
+							windSpeed: $(environmentalCondition).find('input#select-environmental-condition-windspeed').val(),
+							rain: $(environmentalCondition).find('select#select-environmental-condition-rain').val(),
+							dust: $(environmentalCondition).find('select#select-environmental-condition-dust').val(),
+							avgTemperature: $(environmentalCondition).find('input#select-environmental-condition-averagetemperature').val(),
+							snow: $(environmentalCondition).find('select#select-environmental-condition-snow').val(),
+							ice: $(environmentalCondition).find('select#select-environmental-condition-ice').val(),
+							vibrations: $(environmentalCondition).find('select#select-environmental-condition-vibrations').val(),
+							avgPressure: $(environmentalCondition).find('input#select-environmental-condition-averagepressure').val()
+					};
+					
+					areaObject.environmentalConditions[k] = environmentalConditionObject;
+				});
+				
+				$.each($(area).find('div#wall-type-container').children(), function(k, wallType) {
+					wallTypeObject = {
+							wallpaper: $(wallType).find('select#select-wall-type-wallpaper').val(),
+							plasticCladding: $(wallType).find('select#select-wall-type-plasticcladding').val(),
+							woodenPanels: $(wallType).find('select#select-wall-type-woodenpanels').val(),
+							moquette: $(wallType).find('select#select-wall-type-moquette').val(),
+							tiles: $(wallType).find('select#select-wall-type-tiles').val(),
+							plaster: $(wallType).find('select#select-wall-type-plaster').val()
+					};
+					
+					areaObject.wallTypes[k] = wallTypeObject;
+				});
+				
+				deploymentEnvironmentObject.areas[j] = areaObject;
+			});
+			
+			monitoringStationObject.deploymentEnvironments[i] = deploymentEnvironmentObject;
+		});
+		
+		$.ajax({
+			url: '../rest/solver/',
+			datatype: 'application/json',
+			type: 'POST',
+			contentType: 'application/json; charset=utf-8',
+			data: JSON.stringify(monitoringStationObject),
+			beforeSend: function() {
+				$('div#solutions').html('<img src="img/loading.gif" class="img-responsive center-block"></img>');
+			},
+			success: function(data) {
+				console.log(data);
+				
+				var solutionsCode = '';
+				
+				$.each(data, function(s, solution) {
+					solutionsCode += '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading">Solution ' + (s + 1) + '</div><div class="panel-body"><h2>Monitoring Station</h2><ul>';
+					solutionsCode += '<li>Communication: <b>' + standardizeNames(solution.communication) + '</b></li>';
+					solutionsCode += '<li>Enclosure: <b>' + standardizeNames(solution.enclosure) + '</b></li>';
+					solutionsCode += '<li>Local storage: <b>' + standardizeNames(solution.localStorage) + '</b></li>';
+					solutionsCode += '<li>Cloud storage: <b>' + standardizeNames(solution.cloudStorage) + '</b></li>';
+					
+					solutionsCode += '</ul><h2>Deployment Environments</h2>';
+					
+					$.each(solution.deploymentEnvironments, function(d, deploymentEnvironment) {
+						solutionsCode += '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading">Deployment Environment ' + (d + 1) + '</div><div class="panel-body"><ul>';
+						solutionsCode += '<li>Type: <b>' + standardizeNames(deploymentEnvironment.type) + '</b></li>';
+						solutionsCode += '<li>Context: <b>' + standardizeNames(deploymentEnvironment.context) + '</b></li>';
+						solutionsCode += '<li>Location Type: <b>' + standardizeNames(deploymentEnvironment.locationType) + '</b></li>';
+						
+						solutionsCode += '</ul><h2>Areas</h2>';
+						
+						$.each(deploymentEnvironment.areas, function(a, area) {
+							solutionsCode += '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading">Area ' + (a + 1) + '</div><div class="panel-body"><ul>';
+							solutionsCode += '<li>Type: <b>' + standardizeNames(area.type) + '</b></li>';
+							solutionsCode += '<li>Category: <b>' + standardizeNames(area.category) + '</b></li>';
+							solutionsCode += '<li>Prefabricated Building: <b>' + standardizeNames(area.prefabricatedBuilding) + '</b></li>';
+							solutionsCode += '<li>Vehicle Traffic: <b>' + standardizeNames(area.vehicleTraffic) + '</b></li>';
+							solutionsCode += '<li>Industrial Type: <b>' + standardizeNames(area.industrialType) + '</b></li>';
+							solutionsCode += '<li>Polluted Soil: <b>' + standardizeNames(area.pollutedSoil) + '</b></li>';
+							solutionsCode += '<li>Floor: <b>' + area.floor + '</b></li>';
+							solutionsCode += '<li>Controlled Area: <b>' + standardizeNames(area.controlledArea) + '</b></li>';
+							solutionsCode += '<li>Air Conditioning: <b>' + standardizeNames(area.airConditioning) + '</b></li>';
+							solutionsCode += '<li>Heating System: <b>' + standardizeNames(area.heatingSystem) + '</b></li>';
+							solutionsCode += '<li>Windows: <b>' + standardizeNames(area.windows) + '</b></li>';
+							solutionsCode += '<li>Smoke Presence: <b>' + standardizeNames(area.smokePresence) + '</b></li>';
+							solutionsCode += '<li>Mold Presence: <b>' + standardizeNames(area.moldPresence) + '</b></li>';
+							solutionsCode += '<li>Dusty Area: <b>' + standardizeNames(area.dustyArea) + '</b></li>';
+							
+							solutionsCode += '</ul><h2>Environmental Conditions</h2>';
+							
+							$.each(area.environmentalConditions, function(e, environmentalCondition) {
+								solutionsCode += '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading">Environmental Condition ' + (e + 1) + '</div><div class="panel-body"><ul>';
+								solutionsCode += '<li>Humidity: <b>' + environmentalCondition.humidity + '</b></li>';
+								solutionsCode += '<li>Wind Speed: <b>' + environmentalCondition.windSpeed + '</b></li>';
+								solutionsCode += '<li>Rain: <b>' + standardizeNames(environmentalCondition.rain) + '</b></li>';
+								solutionsCode += '<li>Dust: <b>' + standardizeNames(environmentalCondition.dust) + '</b></li>';
+								solutionsCode += '<li>Average Temperature: <b>' + environmentalCondition.avgTemperature + '</b></li>';
+								solutionsCode += '<li>Snow: <b>' + standardizeNames(environmentalCondition.snow) + '</b></li>';
+								solutionsCode += '<li>Ice: <b>' + standardizeNames(environmentalCondition.ice) + '</b></li>';
+								solutionsCode += '<li>Vibrations: <b>' + standardizeNames(environmentalCondition.vibrations) + '</b></li>';
+								solutionsCode += '<li>Average Pressure: <b>' + environmentalCondition.avgPressure + '</b></li>';
+								solutionsCode += '</ul></div></div></div>';
+							});
+							
+							solutionsCode += '<h2>Wall Types</h2>';
+							
+							$.each(area.wallTypes, function(w, wallType) {
+								solutionsCode += '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading">Wall Type ' + (w + 1) + '</div><div class="panel-body"><ul>';
+								solutionsCode += '<li>Wallpaper: <b>' + standardizeNames(wallType.wallpaper) + '</b></li>';
+								solutionsCode += '<li>Plastic Cladding: <b>' + standardizeNames(wallType.plasticCladding) + '</b></li>';
+								solutionsCode += '<li>Wooden Panels: <b>' + standardizeNames(wallType.woodenPanels) + '</b></li>';
+								solutionsCode += '<li>Moquette: <b>' + standardizeNames(wallType.moquette) + '</b></li>';
+								solutionsCode += '<li>Tiles: <b>' + standardizeNames(wallType.tiles) + '</b></li>';
+								solutionsCode += '<li>Plaster: <b>' + standardizeNames(wallType.plaster) + '</b></li>';
+								solutionsCode += '</ul></div></div></div>';
+							});
+							
+							solutionsCode += '</div></div></div>';
+						});
+						
+						solutionsCode += '<h2>Pollutants</h2>';
+						
+						$.each(deploymentEnvironment.pollutants, function(p, pollutant) {
+							solutionsCode += '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading">Pollutant ' + (p + 1) + '</div><div class="panel-body"><ul>';
+							solutionsCode += '<li>Type: <b>' + standardizeNames(pollutant.type) + '</b></li>';
+							solutionsCode += '<li>Gas: <b>' + standardizeNames(pollutant.gas) + '</b></li>';
+							solutionsCode += '<li>Electromagnetic: <b>' + standardizeNames(pollutant.electromagnetic) + '</b></li>';
+							solutionsCode += '<li>Ionizing: <b>' + standardizeNames(pollutant.ionizing) + '</b></li>';
+							solutionsCode += '<li>Affect Air: <b>' + standardizeNames(pollutant.affectAir) + '</b></li>';
+							solutionsCode += '<li>Affect Water: <b>' + standardizeNames(pollutant.affectWater) + '</b></li>';
+							solutionsCode += '<li>Affect Soil: <b>' + standardizeNames(pollutant.affectSoil) + '</b></li>';
+							solutionsCode += '<li>Affect Objects: <b>' + standardizeNames(pollutant.affectObjects) + '</b></li>';
+							solutionsCode += '<li>Ban: <b>' + standardizeNames(pollutant.ban) + '</b></li>';
+							solutionsCode += '<li>Specific: <b>' + standardizeNames(pollutant.specific) + '</b></li>';
+							solutionsCode += '<li>Metric: <b>' + standardizeNames(pollutant.metric) + '</b></li>';
+							solutionsCode += '<li>Raw Metric: <b>' + standardizeNames(pollutant.rawMetric) + '</b></li>';
+							
+							solutionsCode += '</ul><h2>Interferinc Pollutants</h2>';
+							
+							$.each(pollutant.interferingPollutants, function(i, interferingPollutant) {
+								solutionsCode += '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading">Interfering Pollutant ' + (i + 1) + '</div><div class="panel-body"><ul>';
+								solutionsCode += '<li>Type: <b>' + standardizeNames(interferingPollutant.type) + '</b></li>';
+								solutionsCode += '<li>Gas: <b>' + standardizeNames(interferingPollutant.gas) + '</b></li>';
+								solutionsCode += '<li>Electromagnetic: <b>' + standardizeNames(interferingPollutant.electromagnetic) + '</b></li>';
+								solutionsCode += '<li>Ionizing: <b>' + standardizeNames(interferingPollutant.ionizing) + '</b></li>';
+								solutionsCode += '<li>Affect Air: <b>' + standardizeNames(interferingPollutant.affectAir) + '</b></li>';
+								solutionsCode += '<li>Affect Water: <b>' + standardizeNames(interferingPollutant.affectWater) + '</b></li>';
+								solutionsCode += '<li>Affect Soil: <b>' + standardizeNames(interferingPollutant.affectSoil) + '</b></li>';
+								solutionsCode += '<li>Affect Objects: <b>' + standardizeNames(interferingPollutant.affectObjects) + '</b></li>';
+								solutionsCode += '<li>Ban: <b>' + standardizeNames(interferingPollutant.ban) + '</b></li>';
+								solutionsCode += '<li>Explosive: <b>' + standardizeNames(interferingPollutant.explosive) + '</b></li>';
+								solutionsCode += '<li>Toxic: <b>' + standardizeNames(interferingPollutant.toxic) + '</b></li>';
+								solutionsCode += '<li>Dangerous: <b>' + standardizeNames(interferingPollutant.dangerous) + '</b></li>';
+								solutionsCode += '<li>Poisonous: <b>' + standardizeNames(interferingPollutant.poisonous) + '</b></li>';
+								solutionsCode += '<li>Metric: <b>' + standardizeNames(interferingPollutant.metric) + '</b></li>';
+								solutionsCode += '</ul></div></div></div>';
+							});
+							
+							solutionsCode += '<h2>Sensors</h2>';
+							
+							$.each(pollutant.sensors, function(s, sensor) {
+								solutionsCode += '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading">Sensor ' + (s + 1) + '</div><div class="panel-body"><ul>';
+								solutionsCode += '<li>Type: <b>' + standardizeNames(sensor.type) + '</b></li>';
+								solutionsCode += '<li>Techmology: <b>' + standardizeNames(sensor.technology) + '</b></li>';
+								solutionsCode += '<li>Sensitivity: <b>' + sensor.sensitivity + '</b></li>';
+								solutionsCode += '<li>Pod: <b>' + sensor.pod + '</b></li>';
+								solutionsCode += '<li>Range: <b>' + sensor.range + '</b></li>';
+								solutionsCode += '<li>Resolution: <b>' + sensor.resolution + '</b></li>';
+								solutionsCode += '<li>Response Time: <b>' + sensor.responseTime + '</b></li>';
+								solutionsCode += '<li>Expected Operation Life: <b>' + sensor.expectedOperationLife + '</b></li>';
+								solutionsCode += '<li>Min. Operation Temperature: <b>' + sensor.minOpTemperature + '</b></li>';
+								solutionsCode += '<li>Max. Operation Temperature: <b>' + sensor.maxOpTemperature + '</b></li>';
+								solutionsCode += '<li>Min. Operation Humidity: <b>' + sensor.minOpHumidity + '</b></li>';
+								solutionsCode += '<li>Max. Operation Humidity: <b>' + sensor.maxOpHumidity + '</b></li>';
+								solutionsCode += '<li>Min. Operation Pressure: <b>' + sensor.minOpPressure + '</b></li>';
+								solutionsCode += '<li>Max. Operation Pressure: <b>' + sensor.maxOpPressure + '</b></li>';
+								solutionsCode += '<li>Upper Limit: <b>' + sensor.upperLimit + '</b></li>';
+								solutionsCode += '<li>Dual Sensor: <b>' + standardizeNames(sensor.dualSensor) + '</b></li>';
+								solutionsCode += '<li>Noise: <b>' + sensor.noise + '</b></li>';
+								
+								solutionsCode += '</ul><h2>Reference Models</h2>';
+								
+								$.each(sensor.referenceModels, function(r, referenceModel) {
+									solutionsCode += '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading">Reference Model ' + (r + 1) + '</div><div class="panel-body"><ul>';
+									solutionsCode += '<li>Monitoring Algorithm: <b>' + standardizeNames(referenceModel.monitoringAlgorithm) + '</b></li>';
+									solutionsCode += '</ul></div></div></div>';
+								});
+								
+								solutionsCode += '<h2>Monitoring Policy</h2>';
+								
+								solutionsCode += '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading">Monitoring Policy</div><div class="panel-body"><ul>';
+								solutionsCode += '<li>Auto Sampling: <b>' + standardizeNames(sensor.monitoringPolicy.autoSampling) + '</b></li>';
+								solutionsCode += '<li>Sampling Type: <b>' + standardizeNames(sensor.monitoringPolicy.samplingType) + '</b></li>';
+								solutionsCode += '<li>Duration: <b>' + sensor.monitoringPolicy.duration + '</b></li>';
+								solutionsCode += '<li>Publish Rate: <b>' + sensor.monitoringPolicy.publishRate + '</b></li>';
+								solutionsCode += '</ul></div></div></div>';
+								
+								solutionsCode += '</div></div></div>';
+							});
+							
+							solutionsCode += '</div></div></div>';
+						});
+						
+						solutionsCode += '</div></div></div>';
+					});
+					solutionsCode += '</div></div></div>';
+				});
+				
+				$('div#solutions').html(solutionsCode);
+			}
+		});
+	} else {
+		alert('You have not added any deployment environments!');
+	}
+});
+</script>
+</body>
+</html>
