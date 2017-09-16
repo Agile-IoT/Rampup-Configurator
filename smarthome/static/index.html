@@ -310,6 +310,10 @@ $('body').on('click', '#button-add-room', function() {
 			success: function(data) {
 				var solutionsCode = '';
 				
+				if (data.length == 0) {
+					solutionsCode += '<div class="alert alert-danger"><strong>No solutions found.</strong></div>';
+				}
+
 				$.each(data, function(s, solution) {
 					solutionsCode += '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading">Solution ' + (s + 1) + '</div><div class="panel-body"><h2>User Requirements</h2><ul>';
 					solutionsCode += '<li>Comfort / control activated: <b>' + solution.isComfortControlNeeded + '</b></li>';
