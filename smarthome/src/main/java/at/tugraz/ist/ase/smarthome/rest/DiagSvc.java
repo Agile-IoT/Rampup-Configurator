@@ -64,27 +64,30 @@ public class DiagSvc {
 		for (String diagnosisPart : diagnosis) {
 			String javaScriptId = "";
 			if (diagnosisPart.contains("attributevalue_type_userrequirements_iscomfortcontrolneeded")) {
-				javaScriptId = "isComfortControlNeeded";
+				javaScriptId = "#isComfortControlNeeded";
 			} else if (diagnosisPart.contains("attributevalue_type_userrequirements_isenenergysavingneeded")) {
-				javaScriptId = "isEnergySavingNeeded";
+				javaScriptId = "#isEnergySavingNeeded";
 			} else if (diagnosisPart.contains("attributevalue_type_userrequirements_ishealthsupportneeded")) {
-				javaScriptId = "isHealthSupportNeeded";
+				javaScriptId = "#isHealthSupportNeeded";
 			} else if (diagnosisPart.contains("attributevalue_type_userrequirements_issafetysecurityneeded")) {
-				javaScriptId = "isSafetySecurityNeeded";
+				javaScriptId = "#isSafetySecurityNeeded";
 			} else if (diagnosisPart.contains("attributevalue_type_userrequirements_iscostimportant")) {
-				javaScriptId = "isCostImportant";
+				javaScriptId = "#isCostImportant";
 			} else if (diagnosisPart.contains("attributevalue_type_userrequirements_isstabilityneeded")) {
-				javaScriptId = "isStabilityNeeded";
+				javaScriptId = "#isStabilityNeeded";
 			} else if (diagnosisPart.contains("attributevalue_type_userrequirements_issensibletoelectricsmog")) {
-				javaScriptId = "isSensibleToElectricSmog";
+				javaScriptId = "#isSensibleToElectricSmog";
 			} else if (diagnosisPart.contains("attributevalue_type_userrequirements_installation")) {
-				javaScriptId = "installation";
+				javaScriptId = "#installation";
 			} else if (diagnosisPart.contains("attributevalue_type_smarthome_communication")) {
-				javaScriptId = "communication";
+				javaScriptId = "#communication";
 			} else if (diagnosisPart.contains("attributevalue_type_smarthome_builtwith")) {
-				javaScriptId = "builtWith";
+				javaScriptId = "#builtWith";
 			} else if (diagnosisPart.contains("attributevalue_type_smarthome_aretubesenabled")) {
-				javaScriptId = "areTubesInstalled";
+				javaScriptId = "#areTubesInstalled";
+			} else if (diagnosisPart.contains("attributevalue_type_room_roomtype")) {
+				int position = Integer.parseInt(diagnosisPart.split("\\(")[1].split(",")[0]) - 10;
+				javaScriptId = "#room-container div:nth-child(" + position + ") select#select-room-type";
 			}
 			diagnosisParts.add(javaScriptId);
 		}

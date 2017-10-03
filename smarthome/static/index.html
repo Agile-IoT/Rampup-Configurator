@@ -256,17 +256,7 @@ function standardizeNames(name) {
 }
 
 function clearDiagnosis() {
-	$('#isComfortControlNeeded').removeClass('btn-danger');
-	$('#isEnergySavingNeeded').removeClass('btn-danger');
-	$('#isHealthSupportNeeded').removeClass('btn-danger');
-	$('#isSafetySecurityNeeded').removeClass('btn-danger');
-	$('#isCostImportant').removeClass('btn-danger');
-	$('#isStabilityNeeded').removeClass('btn-danger');
-	$('#isSensibleToElectricSmog').removeClass('btn-danger');
-	$('#installation').removeClass('btn-danger');
-	$('#communication').removeClass('btn-danger');
-	$('#builtWith').removeClass('btn-danger');
-	$('#areTubesInstalled').removeClass('btn-danger');
+ 	$('select').removeClass('btn-danger');
 }
 
 var userRequirementsJson = '';
@@ -390,7 +380,7 @@ $('body').on('click', '#button-add-room', function() {
 				clearDiagnosis();
 				
 				$.each(data.diagnosisParts, function(dp, diagnosisPart) {
-					$('#' + diagnosisPart).addClass('btn-danger');
+					$(diagnosisPart).addClass('btn-danger');
 				});
 			}
 		});
