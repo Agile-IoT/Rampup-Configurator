@@ -190,6 +190,7 @@ Contributors:
 </div>
 
 <button type="button" class="btn btn-primary btn-block" id="button-get-configs">Get configurations</button>
+<button type="button" class="btn btn-primary btn-block" id="button-get-diag" disabled>Get diagnosis</button>
 
 <h1>Available Configurations</h1>
 <p>Here you can see up to ten possible configurations according to your input.</p>
@@ -254,6 +255,8 @@ function standardizeNames(name) {
 	}
 }
 
+var userRequirementsJson = '';
+
 $('body').on('click', '#button-add-room', function() {
 	$('#room-container').append('<div class="panel-group"><div class="panel panel-default"><div class="panel-heading"><div class="row-fluid"><div class="span6 pull-left"><select class="form-control" id="select-room-type"><option value="kitchen">Kitchen</option><option value="bathroom">Bathroom</option><option value="livingroom">Livingroom</option><option value="bedroom">Bedroom</option><option value="corridor">Corridor</option><option value="other">Other</option></select></div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-remove-room"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Remove</button></div></div></div><div class="panel-body"><h3>Home Appliances</h3><div class="row-fluid"><div class="span6 pull-left"><p>Here you can add, remove and configure Home Appliances for your Smarthome</p></div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-add-homeappliance"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add</button></div></div><div id="homeappliance-container"></div></div></div></div>');
 }).on('click', '#button-remove-room', function() {
@@ -312,6 +315,11 @@ $('body').on('click', '#button-add-room', function() {
 				
 				if (data.length == 0) {
 					solutionsCode += '<div class="alert alert-danger"><strong>No solutions found.</strong></div>';
+					userRequirementsJson = JSON.stringify(userRequirementsObject);
+					$('button#button-get-diag').prop('disabled', false);
+				} else {
+					userRequirementsJson = '';
+					$('button#button-get-diag').prop('disabled', true);
 				}
 
 				$.each(data, function(s, solution) {
@@ -353,6 +361,19 @@ $('body').on('click', '#button-add-room', function() {
 		});
 	} else {
 		alert('You have not added any rooms!');
+	}
+}).on('click', '#button-get-diag', function() {
+	if (userRequirementsJson != '') {
+		$.ajax({
+			url: '../rest/diagnosis/',
+			datatype: 'application/json',
+			type: 'POST',
+			contentType: 'application/json; charset=utf-8',
+			data: userRequirementsJson,
+			success: function(data) {
+				console.log(data);
+			}
+		});
 	}
 });
 

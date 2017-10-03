@@ -48,6 +48,64 @@ public class ClingoExecutor {
 		return parseClingoOutput(clingoOutput);
 	}
 	
+	public String createDiagnosis (UserRequirements userRequirements) {
+		ArrayList<String> userConstraintList = createUserConstraintList(userRequirements);
+		
+		// if isEmpty(C) or inconsistent(AC – C) return null
+		if (userConstraintList.isEmpty() || !isConsistent(getClingoProgram())) {
+			return null;
+		// else return FD(null, C, AC);
+		} else {
+			ArrayList<String> ac = new ArrayList<String>();
+			ac.add(getClingoProgram());
+			ac.addAll(userConstraintList);
+			return fastDiag(null, userConstraintList, ac).toString();
+		}
+	}
+	
+	private boolean isConsistent(String program) {
+		if (parseClingoOutput(executeClingo(program)).size() >= 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	private boolean isConsistent(ArrayList<String> constraints) {
+		String program = "";
+		for (String constraint : constraints) {
+			program += constraint + "\n";
+		}
+		return isConsistent(program);
+	}
+	
+	private ArrayList<String> subtract(ArrayList<String> first, ArrayList<String> second) {
+		@SuppressWarnings("unchecked")
+		ArrayList<String> result = (ArrayList<String>) first.clone();
+		if (second != null) {
+			result.removeAll(second);
+		}
+		return result;
+	}
+	
+	private ArrayList<String> union(ArrayList<String> first, ArrayList<String> second) {
+		if (second != null) {
+			if (first != null) {
+				@SuppressWarnings("unchecked")
+				ArrayList<String> result = (ArrayList<String>) first.clone();
+				for (String constraint : second) {
+					if (!result.contains(constraint)) {
+						result.add(constraint);
+					}
+				}
+				return result;
+			} else {
+				return second;
+			}
+		} else {
+			return first;
+		}
+	}
+	
 	private String executeClingo(String program) {
 		String result = "";
 		
@@ -82,6 +140,40 @@ public class ClingoExecutor {
 		return result;
 	}
 	
+	private ArrayList<String> fastDiag(ArrayList<String> d, ArrayList<String> c, ArrayList<String> ac) {
+		// if D != null and consistent(AC) return null;
+		if (d != null && isConsistent(ac)) {
+			return null;
+		}
+		// if singleton(C) return C;
+		if (isSingleton(c)) {
+			return c;
+		}
+		// k = q/2;
+		int q = c.size();
+		int k = q / 2;
+		// C1 = {c1..ck}; C2 = {ck+1..cq};
+		ArrayList<String> c1 = new ArrayList<String>();
+		ArrayList<String> c2 = new ArrayList<String>();
+		c1.addAll(c.subList(0, k));
+		c2.addAll(c.subList(k, q));
+		// D1 = FD(C1, C2, AC - C1);
+		ArrayList<String> d1 = fastDiag(c1, c2, subtract(ac, c1));
+		// D2 = FD(D1, C1, AC - D1);
+		ArrayList<String> d2 = fastDiag(d1, c1, subtract(ac, d1));
+		
+		// return(D1 U D2);
+		return union(d1, d2);
+	}
+	
+	private boolean isSingleton(ArrayList<String> c) {
+		if (c.size() == 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	private String getClingoProgram() {
 		String result = "";
 		BufferedReader br = null;
@@ -122,59 +214,69 @@ public class ClingoExecutor {
 	private String generateUserReqProgram(UserRequirements userRequirements) {
 		String program = "";
 		
+		for (String userConstraint : createUserConstraintList(userRequirements)) {
+			program += userConstraint + "\n";
+		}
+		
+		//System.out.println(program);
+		
+		return program;
+	}
+	
+	private ArrayList<String> createUserConstraintList(UserRequirements userRequirements) {
+		ArrayList<String> userConstraints = new ArrayList<String>();
+		
 		// user requirements
-		program += "type_userrequirements(" + userRequirements.getId() + ").\n";
+		userConstraints.add("type_userrequirements(" + userRequirements.getId() + ").");
 		if (!userRequirements.isComfortControlNeeded().equals(""))
-			program += "attributevalue_type_userrequirements_iscomfortcontrolneeded(" + userRequirements.getId() + "," + userRequirements.isComfortControlNeeded() + ").\n";
+			userConstraints.add("attributevalue_type_userrequirements_iscomfortcontrolneeded(" + userRequirements.getId() + "," + userRequirements.isComfortControlNeeded() + ").");
 		if (!userRequirements.isEnergySavingNeeded().equals(""))
-			program += "attributevalue_type_userrequirements_isenenergysavingneeded(" + userRequirements.getId() + "," + userRequirements.isEnergySavingNeeded() + ").\n";
+			userConstraints.add("attributevalue_type_userrequirements_isenenergysavingneeded(" + userRequirements.getId() + "," + userRequirements.isEnergySavingNeeded() + ").");
 		if (!userRequirements.isHealthSupportNeeded().equals(""))
-			program += "attributevalue_type_userrequirements_ishealthsupportneeded(" + userRequirements.getId() + "," + userRequirements.isHealthSupportNeeded() + ").\n";
+			userConstraints.add("attributevalue_type_userrequirements_ishealthsupportneeded(" + userRequirements.getId() + "," + userRequirements.isHealthSupportNeeded() + ").");
 		if (!userRequirements.isSafetySecurityNeeded().equals(""))
-			program += "attributevalue_type_userrequirements_issafetysecurityneeded(" + userRequirements.getId() + "," + userRequirements.isSafetySecurityNeeded() + ").\n";
+			userConstraints.add("attributevalue_type_userrequirements_issafetysecurityneeded(" + userRequirements.getId() + "," + userRequirements.isSafetySecurityNeeded() + ").");
 		if (!userRequirements.isCostImportant().equals(""))
-			program += "attributevalue_type_userrequirements_iscostimportant(" + userRequirements.getId() + "," + userRequirements.isCostImportant() + ").\n";
+			userConstraints.add("attributevalue_type_userrequirements_iscostimportant(" + userRequirements.getId() + "," + userRequirements.isCostImportant() + ").");
 		if (!userRequirements.isStabilityNeeded().equals(""))
-			program += "attributevalue_type_userrequirements_isstabilityneeded(" + userRequirements.getId() + "," + userRequirements.isStabilityNeeded() + ").\n";
+			userConstraints.add("attributevalue_type_userrequirements_isstabilityneeded(" + userRequirements.getId() + "," + userRequirements.isStabilityNeeded() + ").");
 		if (!userRequirements.isSensibleToElectricSmog().equals(""))
-			program += "attributevalue_type_userrequirements_issensibletoelectricsmog(" + userRequirements.getId() + "," + userRequirements.isSensibleToElectricSmog() + ").\n";
+			userConstraints.add("attributevalue_type_userrequirements_issensibletoelectricsmog(" + userRequirements.getId() + "," + userRequirements.isSensibleToElectricSmog() + ").");
 		if (!userRequirements.getInstallation().equals(""))
-			program += "attributevalue_type_userrequirements_installation(" + userRequirements.getId() + "," + userRequirements.getInstallation() + ").\n";
+			userConstraints.add("attributevalue_type_userrequirements_installation(" + userRequirements.getId() + "," + userRequirements.getInstallation() + ").");
 		
 		// smart home
 		SmartHome smartHome = userRequirements.getSmartHome();
-		program += "type_smarthome(" + smartHome.getId() + ").\n";
+		userConstraints.add("type_smarthome(" + smartHome.getId() + ").");
 		if (!smartHome.areTubesInstalled().equals(""))
-			program += "attributevalue_type_smarthome_aretubesenabled(" + smartHome.getId() + "," + smartHome.areTubesInstalled() + ").\n";
+			userConstraints.add("attributevalue_type_smarthome_aretubesenabled(" + smartHome.getId() + "," + smartHome.areTubesInstalled() + ").");
 		if (!smartHome.getBuiltWith().equals(""))
-			program += "attributevalue_type_smarthome_builtwith(" + smartHome.getId() + "," + smartHome.getBuiltWith() + ").\n";
+			userConstraints.add("attributevalue_type_smarthome_builtwith(" + smartHome.getId() + "," + smartHome.getBuiltWith() + ").");
 		if (!smartHome.getCommunication().equals(""))
-			program += "attributevalue_type_smarthome_communication(" + smartHome.getId() + "," + smartHome.getCommunication() + ").\n";
-		program += "assoc_type_userrequirements_and_type_smarthome(" + userRequirements.getId() + "," + smartHome.getId() + ").\n";
+			userConstraints.add("attributevalue_type_smarthome_communication(" + smartHome.getId() + "," + smartHome.getCommunication() + ").");
+			userConstraints.add("assoc_type_userrequirements_and_type_smarthome(" + userRequirements.getId() + "," + smartHome.getId() + ").");
 		
 		// rooms
 		for (Room room : smartHome.getRooms()) {
-			program += "type_room(" + room.getId() + ").\n";
+			userConstraints.add("type_room(" + room.getId() + ").");
 			if (!room.getType().equals(""))
-				program += "attributevalue_type_room_roomtype(" + room.getId() + "," + room.getType() + ").\n";
-			program += "assoc_type_room_and_type_smarthome(" + room.getId() + "," + smartHome.getId() + ").\n";
+				userConstraints.add("attributevalue_type_room_roomtype(" + room.getId() + "," + room.getType() + ").");
+				userConstraints.add("assoc_type_room_and_type_smarthome(" + room.getId() + "," + smartHome.getId() + ").");
 			if (room.getHomeAppliances() != null) {
 				for (HomeAppliance homeAppliance : room.getHomeAppliances()) {
-					program += "type_homeappliance(" + homeAppliance.getId() + ").\n";
+					userConstraints.add("type_homeappliance(" + homeAppliance.getId() + ").");
 					if (!homeAppliance.getType().equals(""))
-						program += "attributevalue_type_homeappliance_homeappliancetype(" + homeAppliance.getId() + "," + homeAppliance.getType() + ").\n";
+						userConstraints.add("attributevalue_type_homeappliance_homeappliancetype(" + homeAppliance.getId() + "," + homeAppliance.getType() + ").");
 					if (!homeAppliance.isAlwaysOn().equals(""))
-						program += "attributevalue_type_homeappliance_isalwayson(" + homeAppliance.getId() + "," + homeAppliance.isAlwaysOn() + ").\n";
+						userConstraints.add("attributevalue_type_homeappliance_isalwayson(" + homeAppliance.getId() + "," + homeAppliance.isAlwaysOn() + ").");
 					if (!homeAppliance.isDangerous().equals(""))
-						program += "attributevalue_type_homeappliance_isdangerous(" + homeAppliance.getId() + "," + homeAppliance.isDangerous() + ").\n";
-					program += "assoc_type_room_and_type_homeappliance(" + room.getId() + "," + homeAppliance.getId() + ").\n";
+						userConstraints.add("attributevalue_type_homeappliance_isdangerous(" + homeAppliance.getId() + "," + homeAppliance.isDangerous() + ").");
+						userConstraints.add("assoc_type_room_and_type_homeappliance(" + room.getId() + "," + homeAppliance.getId() + ").");
 				}
 			}
 		}
 		
-		System.out.println(program);
-		
-		return program;
+		return userConstraints;
 	}
 	
 	private ArrayList<UserRequirements> parseClingoOutput(String clingoOutput) {
