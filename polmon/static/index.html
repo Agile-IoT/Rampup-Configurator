@@ -15,14 +15,29 @@ Contributors:
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pollution Monitoring Configurator</title>
+<title>AGILE Pollution Monitoring Configurator</title>
 <link rel="stylesheet" href="css/bootstrap.min.css">
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
+<style>
+.header img {
+	float: left;
+	width: 92px;
+	height: 40px;
+	margin-right: 10px;
+}
+
+.header h1 {
+	position: relative;
+}
+</style>
 </head>
 <body>
-<h1>Pollution Monitoring Configurator</h1>
-<p>Welcome to the Pollution Monitoring Configurator. Below you can specify the preferences for you monitoring station.</p>
+<div class="header">
+	<img src="img/agile-logo.png" alt="logo" />
+	<h1>Pollution Monitoring Configurator</h1>
+</div>
+<p>Welcome to the AGILE Pollution Monitoring Configurator. Below you can specify the preferences for you monitoring station.</p>
 
 <h2>Monitoring Station</h2>
 <p>Here you can specify what is important for your Monitoring Station.</p>
@@ -30,7 +45,7 @@ Contributors:
 <div class="panel-group form-group">
 	<div class="row">
 		<div class="col-lg-6 col-md-6 col-sm-6">
-			<div class="panel panel-default">
+			<div class="panel panel-success">
 				<div class="panel-heading">Communication</div>
 				<div class="panel-body">
 					<select class="form-control" id="communication">
@@ -42,7 +57,7 @@ Contributors:
 			</div>
 		</div>
 		<div class="col-lg-6 col-md-6 col-sm-6">
-			<div class="panel panel-default">
+			<div class="panel panel-success">
 				<div class="panel-heading">Enclosure</div>
 				<div class="panel-body">
 					<select class="form-control" id="enclosure">
@@ -56,7 +71,7 @@ Contributors:
 	</div>
 	<div class="row">
 		<div class="col-lg-6 col-md-6 col-sm-6">
-			<div class="panel panel-default">
+			<div class="panel panel-success">
 				<div class="panel-heading">Local storage</div>
 				<div class="panel-body">
 					<select class="form-control" id="localStorage">
@@ -68,7 +83,7 @@ Contributors:
 			</div>
 		</div>
 		<div class="col-lg-6 col-md-6 col-sm-6">
-			<div class="panel panel-default">
+			<div class="panel panel-success">
 				<div class="panel-heading">Cloud storage</div>
 				<div class="panel-body">
 					<select class="form-control" id="cloudStorage">
@@ -86,7 +101,7 @@ Contributors:
 <p>Here you can add and remove deployment environments to your monitoring station.</p>
 
 <div class="panel-group">
-	<div class="panel panel-default">
+	<div class="panel panel-warning">
 		<div class="panel-heading"><div class="row-fluid"><div class="span6 pull-left">Deployment Environments</div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-add-deployment-environment"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add</button></div></div></div>
 		<div class="panel-body">
 			<div id="deployment-environment-container">
@@ -298,7 +313,7 @@ function standardizeNames(name) {
 }
 
 $('body').on('click', '#button-add-deployment-environment', function() {
-	var htmlToAppend = '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading"><div class="row-fluid"><div class="span6 pull-left">Deployment Environment</div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-remove-deployment-environment"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Remove</button></div></div></div><div class="panel-body">';
+	var htmlToAppend = '<div class="panel-group"><div class="panel panel-warning"><div class="panel-heading"><div class="row-fluid"><div class="span6 pull-left">Deployment Environment</div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-remove-deployment-environment"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Remove</button></div></div></div><div class="panel-body">';
 	htmlToAppend += '<label for="select-deployment-environment-type">Type</label><select class="form-control" id="select-deployment-environment-type"><option value="">No preference</option><option value="indoor">Indoor</option><option value="outdoor">Outdoor</option><option value="mixed">Mixed</option></select>';
 	htmlToAppend += '<label for="select-deployment-environment-context">Context</label><select class="form-control" id="select-deployment-environment-context"><option value="">No preference</option><option value="seaside">Seaside</option><option value="country">Country</option><option value="tropicalarea">Tropical area</option><option value="aridarea">Arid area</option><option value="other">Other</option></select>';
 	htmlToAppend += '<label for="select-deployment-environment-location-type">Location Type</label><select class="form-control" id="select-deployment-environment-location-type"><option value="">No preference</option><option value="urban">Urban</option><option value="suburban">Suburban</option><option value="countryside">Countryside</option><option value="residential">Residential</option><option value="industrial">Industrial</option><option value="other">Other</option></select>';
@@ -309,7 +324,7 @@ $('body').on('click', '#button-add-deployment-environment', function() {
 	divDeploymentEnvironmentContainer.remove();
 }).on('click', '#button-add-area', function() {
 	var divAreaContainer = $(this).parent().parent().parent().find('#area-container');
-	var htmlToAppend = '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading"><div class="row-fluid"><div class="span6 pull-left">Area</div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-remove-area"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Remove</button></div></div></div><div class="panel-body">';
+	var htmlToAppend = '<div class="panel-group"><div class="panel panel-warning"><div class="panel-heading"><div class="row-fluid"><div class="span6 pull-left">Area</div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-remove-area"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Remove</button></div></div></div><div class="panel-body">';
 	htmlToAppend += '<label for="select-area-type">Type</label><select class="form-control" id="select-area-type"><option value="">No preference</option><option value="indoor">Indoor</option><option value="outdoor">Outdoor</option><option value="mixed">Mixed</option></select>';
 	htmlToAppend += '<label for="select-area-category">Category</label><select class="form-control" id="select-area-category"><option value="">No preference</option><option value="industry">Industry</option><option value="shop">Shop</option><option value="gym">Gym</option><option value="pub">Pub</option><option value="library">Library</option><option value="hospital">Hospital</option><option value="residential">Residential</option><option value="school">School</option><option value="publicoffice">Public Office</option><option value="monument">Monument</option><option value="road">Road</option><option value="countryfield">Country Field</option><option value="sensitivearea">Sensitive Area</option><option value="childrenspace">Children Space</option><option value="other">Other</option></select>';
 	htmlToAppend += '<label for="select-area-prefabricatedbuilding">Prefabricated Building</label><select class="form-control" id="select-area-prefabricatedbuilding"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
@@ -333,7 +348,7 @@ $('body').on('click', '#button-add-deployment-environment', function() {
 	divAreaContainer.remove();
 }).on('click', '#button-add-environmental-condition', function() {
 	var divEnvironmentalConditionContainer = $(this).parent().parent().parent().find('#environmental-condition-container');
-	var htmlToAppend = '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading"><div class="row-fluid"><div class="span6 pull-left">Environmental Condition</div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-remove-environmental-condition"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Remove</button></div></div></div><div class="panel-body">';
+	var htmlToAppend = '<div class="panel-group"><div class="panel panel-warning"><div class="panel-heading"><div class="row-fluid"><div class="span6 pull-left">Environmental Condition</div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-remove-environmental-condition"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Remove</button></div></div></div><div class="panel-body">';
 	htmlToAppend += '<label for="select-environmental-condition-humidity">Humidity (0-10)</label><input type="number" class="form-control" id="select-environmental-condition-humidity" min="0" max="10"></input>';
 	htmlToAppend += '<label for="select-environmental-condition-windspeed">Wind Speed (0-10)</label><input type="number" class="form-control" id="select-environmental-condition-windspeed" min="0" max="10"></input>';
 	htmlToAppend += '<label for="select-environmental-condition-rain">Rain</label><select class="form-control" id="select-environmental-condition-rain"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
@@ -351,7 +366,7 @@ $('body').on('click', '#button-add-deployment-environment', function() {
 	divEnvironmentalConditionContainer.remove();
 }).on('click', '#button-add-wall-type', function() {
 	var divWallTypeContainer = $(this).parent().parent().parent().find('#wall-type-container');
-	var htmlToAppend = '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading"><div class="row-fluid"><div class="span6 pull-left">Wall Type</div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-remove-wall-type"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Remove</button></div></div></div><div class="panel-body">';
+	var htmlToAppend = '<div class="panel-group"><div class="panel panel-warning"><div class="panel-heading"><div class="row-fluid"><div class="span6 pull-left">Wall Type</div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-remove-wall-type"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Remove</button></div></div></div><div class="panel-body">';
 	htmlToAppend += '<label for="select-wall-type-wallpaper">Wallpaper</label><select class="form-control" id="select-wall-type-wallpaper"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
 	htmlToAppend += '<label for="select-wall-type-plasticcladding">Plastic Cladding</label><select class="form-control" id="select-wall-type-plasticcladding"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
 	htmlToAppend += '<label for="select-wall-type-woodenpanels">Wooden Panels</label><select class="form-control" id="select-wall-type-woodenpanels"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
@@ -457,7 +472,7 @@ $('body').on('click', '#button-add-deployment-environment', function() {
 				}
 
 				$.each(data, function(s, solution) {
-					solutionsCode += '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading">Solution ' + (s + 1) + '</div><div class="panel-body"><h2>Monitoring Station</h2><ul>';
+					solutionsCode += '<div class="panel-group"><div class="panel panel-info"><div class="panel-heading">Solution ' + (s + 1) + '</div><div class="panel-body"><h2>Monitoring Station</h2><ul>';
 					solutionsCode += '<li>Communication: <b>' + standardizeNames(solution.communication) + '</b></li>';
 					solutionsCode += '<li>Enclosure: <b>' + standardizeNames(solution.enclosure) + '</b></li>';
 					solutionsCode += '<li>Local storage: <b>' + standardizeNames(solution.localStorage) + '</b></li>';
@@ -466,7 +481,7 @@ $('body').on('click', '#button-add-deployment-environment', function() {
 					solutionsCode += '</ul><h2>Deployment Environments</h2>';
 					
 					$.each(solution.deploymentEnvironments, function(d, deploymentEnvironment) {
-						solutionsCode += '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading">Deployment Environment ' + (d + 1) + '</div><div class="panel-body"><ul>';
+						solutionsCode += '<div class="panel-group"><div class="panel panel-info"><div class="panel-heading">Deployment Environment ' + (d + 1) + '</div><div class="panel-body"><ul>';
 						solutionsCode += '<li>Type: <b>' + standardizeNames(deploymentEnvironment.type) + '</b></li>';
 						solutionsCode += '<li>Context: <b>' + standardizeNames(deploymentEnvironment.context) + '</b></li>';
 						solutionsCode += '<li>Location Type: <b>' + standardizeNames(deploymentEnvironment.locationType) + '</b></li>';
@@ -474,7 +489,7 @@ $('body').on('click', '#button-add-deployment-environment', function() {
 						solutionsCode += '</ul><h2>Areas</h2>';
 						
 						$.each(deploymentEnvironment.areas, function(a, area) {
-							solutionsCode += '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading">Area ' + (a + 1) + '</div><div class="panel-body"><ul>';
+							solutionsCode += '<div class="panel-group"><div class="panel panel-info"><div class="panel-heading">Area ' + (a + 1) + '</div><div class="panel-body"><ul>';
 							solutionsCode += '<li>Type: <b>' + standardizeNames(area.type) + '</b></li>';
 							solutionsCode += '<li>Category: <b>' + standardizeNames(area.category) + '</b></li>';
 							solutionsCode += '<li>Prefabricated Building: <b>' + standardizeNames(area.prefabricatedBuilding) + '</b></li>';
@@ -493,7 +508,7 @@ $('body').on('click', '#button-add-deployment-environment', function() {
 							solutionsCode += '</ul><h2>Environmental Conditions</h2>';
 							
 							$.each(area.environmentalConditions, function(e, environmentalCondition) {
-								solutionsCode += '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading">Environmental Condition ' + (e + 1) + '</div><div class="panel-body"><ul>';
+								solutionsCode += '<div class="panel-group"><div class="panel panel-info"><div class="panel-heading">Environmental Condition ' + (e + 1) + '</div><div class="panel-body"><ul>';
 								solutionsCode += '<li>Humidity: <b>' + environmentalCondition.humidity + '</b></li>';
 								solutionsCode += '<li>Wind Speed: <b>' + environmentalCondition.windSpeed + '</b></li>';
 								solutionsCode += '<li>Rain: <b>' + standardizeNames(environmentalCondition.rain) + '</b></li>';
@@ -509,7 +524,7 @@ $('body').on('click', '#button-add-deployment-environment', function() {
 							solutionsCode += '<h2>Wall Types</h2>';
 							
 							$.each(area.wallTypes, function(w, wallType) {
-								solutionsCode += '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading">Wall Type ' + (w + 1) + '</div><div class="panel-body"><ul>';
+								solutionsCode += '<div class="panel-group"><div class="panel panel-info"><div class="panel-heading">Wall Type ' + (w + 1) + '</div><div class="panel-body"><ul>';
 								solutionsCode += '<li>Wallpaper: <b>' + standardizeNames(wallType.wallpaper) + '</b></li>';
 								solutionsCode += '<li>Plastic Cladding: <b>' + standardizeNames(wallType.plasticCladding) + '</b></li>';
 								solutionsCode += '<li>Wooden Panels: <b>' + standardizeNames(wallType.woodenPanels) + '</b></li>';
@@ -525,7 +540,7 @@ $('body').on('click', '#button-add-deployment-environment', function() {
 						solutionsCode += '<h2>Pollutants</h2>';
 						
 						$.each(deploymentEnvironment.pollutants, function(p, pollutant) {
-							solutionsCode += '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading">Pollutant ' + (p + 1) + '</div><div class="panel-body"><ul>';
+							solutionsCode += '<div class="panel-group"><div class="panel panel-info"><div class="panel-heading">Pollutant ' + (p + 1) + '</div><div class="panel-body"><ul>';
 							solutionsCode += '<li>Type: <b>' + standardizeNames(pollutant.type) + '</b></li>';
 							solutionsCode += '<li>Gas: <b>' + standardizeNames(pollutant.gas) + '</b></li>';
 							solutionsCode += '<li>Electromagnetic: <b>' + standardizeNames(pollutant.electromagnetic) + '</b></li>';
@@ -542,7 +557,7 @@ $('body').on('click', '#button-add-deployment-environment', function() {
 							solutionsCode += '</ul><h2>Interferinc Pollutants</h2>';
 							
 							$.each(pollutant.interferingPollutants, function(i, interferingPollutant) {
-								solutionsCode += '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading">Interfering Pollutant ' + (i + 1) + '</div><div class="panel-body"><ul>';
+								solutionsCode += '<div class="panel-group"><div class="panel panel-info"><div class="panel-heading">Interfering Pollutant ' + (i + 1) + '</div><div class="panel-body"><ul>';
 								solutionsCode += '<li>Type: <b>' + standardizeNames(interferingPollutant.type) + '</b></li>';
 								solutionsCode += '<li>Gas: <b>' + standardizeNames(interferingPollutant.gas) + '</b></li>';
 								solutionsCode += '<li>Electromagnetic: <b>' + standardizeNames(interferingPollutant.electromagnetic) + '</b></li>';
@@ -563,7 +578,7 @@ $('body').on('click', '#button-add-deployment-environment', function() {
 							solutionsCode += '<h2>Sensors</h2>';
 							
 							$.each(pollutant.sensors, function(s, sensor) {
-								solutionsCode += '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading">Sensor ' + (s + 1) + '</div><div class="panel-body"><ul>';
+								solutionsCode += '<div class="panel-group"><div class="panel panel-info"><div class="panel-heading">Sensor ' + (s + 1) + '</div><div class="panel-body"><ul>';
 								solutionsCode += '<li>Type: <b>' + standardizeNames(sensor.type) + '</b></li>';
 								solutionsCode += '<li>Techmology: <b>' + standardizeNames(sensor.technology) + '</b></li>';
 								solutionsCode += '<li>Sensitivity: <b>' + sensor.sensitivity + '</b></li>';
@@ -585,14 +600,14 @@ $('body').on('click', '#button-add-deployment-environment', function() {
 								solutionsCode += '</ul><h2>Reference Models</h2>';
 								
 								$.each(sensor.referenceModels, function(r, referenceModel) {
-									solutionsCode += '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading">Reference Model ' + (r + 1) + '</div><div class="panel-body"><ul>';
+									solutionsCode += '<div class="panel-group"><div class="panel panel-info"><div class="panel-heading">Reference Model ' + (r + 1) + '</div><div class="panel-body"><ul>';
 									solutionsCode += '<li>Monitoring Algorithm: <b>' + standardizeNames(referenceModel.monitoringAlgorithm) + '</b></li>';
 									solutionsCode += '</ul></div></div></div>';
 								});
 								
 								solutionsCode += '<h2>Monitoring Policy</h2>';
 								
-								solutionsCode += '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading">Monitoring Policy</div><div class="panel-body"><ul>';
+								solutionsCode += '<div class="panel-group"><div class="panel panel-info"><div class="panel-heading">Monitoring Policy</div><div class="panel-body"><ul>';
 								solutionsCode += '<li>Auto Sampling: <b>' + standardizeNames(sensor.monitoringPolicy.autoSampling) + '</b></li>';
 								solutionsCode += '<li>Sampling Type: <b>' + standardizeNames(sensor.monitoringPolicy.samplingType) + '</b></li>';
 								solutionsCode += '<li>Duration: <b>' + sensor.monitoringPolicy.duration + '</b></li>';
