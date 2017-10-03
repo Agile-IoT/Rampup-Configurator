@@ -255,6 +255,20 @@ function standardizeNames(name) {
 	}
 }
 
+function clearDiagnosis() {
+	$('#isComfortControlNeeded').removeClass('btn-danger');
+	$('#isEnergySavingNeeded').removeClass('btn-danger');
+	$('#isHealthSupportNeeded').removeClass('btn-danger');
+	$('#isSafetySecurityNeeded').removeClass('btn-danger');
+	$('#isCostImportant').removeClass('btn-danger');
+	$('#isStabilityNeeded').removeClass('btn-danger');
+	$('#isSensibleToElectricSmog').removeClass('btn-danger');
+	$('#installation').removeClass('btn-danger');
+	$('#communication').removeClass('btn-danger');
+	$('#builtWith').removeClass('btn-danger');
+	$('#areTubesInstalled').removeClass('btn-danger');
+}
+
 var userRequirementsJson = '';
 
 $('body').on('click', '#button-add-room', function() {
@@ -269,6 +283,8 @@ $('body').on('click', '#button-add-room', function() {
 	var divHomeApplianceContainer = $(this).parent().parent().parent().parent().parent();
 	divHomeApplianceContainer.remove();
 }).on('click', '#button-get-configs', function() {
+	clearDiagnosis();
+	
 	var userRequirementsObject = {
 			isComfortControlNeeded: $('select#isComfortControlNeeded').val(),
 			isEnergySavingNeeded: $('select#isEnergySavingNeeded').val(),
@@ -371,10 +387,15 @@ $('body').on('click', '#button-add-room', function() {
 			contentType: 'application/json; charset=utf-8',
 			data: userRequirementsJson,
 			success: function(data) {
-				console.log(data);
+				clearDiagnosis();
+				
+				$.each(data.diagnosisParts, function(dp, diagnosisPart) {
+					$('#' + diagnosisPart).addClass('btn-danger');
+				});
 			}
 		});
 	}
+	$('button#button-get-diag').prop('disabled', true);
 });
 
 </script>

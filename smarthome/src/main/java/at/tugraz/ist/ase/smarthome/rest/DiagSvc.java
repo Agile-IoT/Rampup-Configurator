@@ -2,6 +2,7 @@ package at.tugraz.ist.ase.smarthome.rest;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Properties;
 
 import javax.ws.rs.Consumes;
@@ -12,6 +13,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import at.tugraz.ist.ase.smarthome.ClingoExecutor;
 import at.tugraz.ist.ase.smarthome.classes.UserRequirements;
@@ -46,8 +50,47 @@ public class DiagSvc {
 		userRequirements.populateIds();
 		
 		ClingoExecutor clingoExecutor = new ClingoExecutor(pathToClingo, pathToProgram, numOfResults);
-		String result = clingoExecutor.createDiagnosis(userRequirements);
+		ArrayList<String> diagnosis = clingoExecutor.createDiagnosis(userRequirements);
 		
-		return Response.ok(result).build();
+		System.out.println(diagnosis);
+		
+		return Response.ok(translateToJavaScriptId(diagnosis).toString()).build();
+	}
+	
+	private JsonObject translateToJavaScriptId(ArrayList<String> diagnosis) {
+		JsonObject diagnosisObject = new JsonObject();
+		JsonArray diagnosisParts = new JsonArray();
+		
+		for (String diagnosisPart : diagnosis) {
+			String javaScriptId = "";
+			if (diagnosisPart.contains("attributevalue_type_userrequirements_iscomfortcontrolneeded")) {
+				javaScriptId = "isComfortControlNeeded";
+			} else if (diagnosisPart.contains("attributevalue_type_userrequirements_isenenergysavingneeded")) {
+				javaScriptId = "isEnergySavingNeeded";
+			} else if (diagnosisPart.contains("attributevalue_type_userrequirements_ishealthsupportneeded")) {
+				javaScriptId = "isHealthSupportNeeded";
+			} else if (diagnosisPart.contains("attributevalue_type_userrequirements_issafetysecurityneeded")) {
+				javaScriptId = "isSafetySecurityNeeded";
+			} else if (diagnosisPart.contains("attributevalue_type_userrequirements_iscostimportant")) {
+				javaScriptId = "isCostImportant";
+			} else if (diagnosisPart.contains("attributevalue_type_userrequirements_isstabilityneeded")) {
+				javaScriptId = "isStabilityNeeded";
+			} else if (diagnosisPart.contains("attributevalue_type_userrequirements_issensibletoelectricsmog")) {
+				javaScriptId = "isSensibleToElectricSmog";
+			} else if (diagnosisPart.contains("attributevalue_type_userrequirements_installation")) {
+				javaScriptId = "installation";
+			} else if (diagnosisPart.contains("attributevalue_type_smarthome_communication")) {
+				javaScriptId = "communication";
+			} else if (diagnosisPart.contains("attributevalue_type_smarthome_builtwith")) {
+				javaScriptId = "builtWith";
+			} else if (diagnosisPart.contains("attributevalue_type_smarthome_aretubesenabled")) {
+				javaScriptId = "areTubesInstalled";
+			}
+			diagnosisParts.add(javaScriptId);
+		}
+		
+		diagnosisObject.add("diagnosisParts", diagnosisParts);
+		
+		return diagnosisObject;
 	}
 }

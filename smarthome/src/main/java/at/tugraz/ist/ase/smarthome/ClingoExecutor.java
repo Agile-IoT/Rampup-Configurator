@@ -48,7 +48,7 @@ public class ClingoExecutor {
 		return parseClingoOutput(clingoOutput);
 	}
 	
-	public String createDiagnosis (UserRequirements userRequirements) {
+	public ArrayList<String> createDiagnosis (UserRequirements userRequirements) {
 		ArrayList<String> userConstraintList = createUserConstraintList(userRequirements);
 		
 		// if isEmpty(C) or inconsistent(AC – C) return null
@@ -59,7 +59,7 @@ public class ClingoExecutor {
 			ArrayList<String> ac = new ArrayList<String>();
 			ac.add(getClingoProgram());
 			ac.addAll(userConstraintList);
-			return fastDiag(null, userConstraintList, ac).toString();
+			return fastDiag(null, userConstraintList, ac);
 		}
 	}
 	
