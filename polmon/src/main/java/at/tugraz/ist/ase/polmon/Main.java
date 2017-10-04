@@ -21,6 +21,7 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
+import at.tugraz.ist.ase.polmon.rest.DiagSvc;
 import at.tugraz.ist.ase.polmon.rest.SolverSvc;
 
 public class Main {
@@ -41,7 +42,7 @@ public class Main {
 		ServletHolder jerseyServlet = restHandler.addServlet(org.glassfish.jersey.servlet.ServletContainer.class, "/*");
 		jerseyServlet.setInitOrder(0);
 		
-		String restClasses = SolverSvc.class.getCanonicalName();
+		String restClasses = SolverSvc.class.getCanonicalName() + "," + DiagSvc.class.getCanonicalName();
 		jerseyServlet.setInitParameter("jersey.config.server.provider.classnames", restClasses);
 		
 		// handler to serve static files

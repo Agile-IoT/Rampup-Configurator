@@ -112,6 +112,7 @@ Contributors:
 </div>
 
 <button type="button" class="btn btn-primary btn-block" id="button-get-configs">Get configurations</button>
+<button type="button" class="btn btn-primary btn-block" id="button-get-diag" disabled>Get diagnosis</button>
 
 <h1>Available Configurations</h1>
 <p>Here you can see up to ten possible configurations according to your input.</p>
@@ -312,11 +313,17 @@ function standardizeNames(name) {
 	}
 }
 
+function clearDiagnosis() {
+ 	$('select').removeClass('btn-danger');
+}
+
+var userRequirementsJson = '';
+
 $('body').on('click', '#button-add-deployment-environment', function() {
 	var htmlToAppend = '<div class="panel-group"><div class="panel panel-warning"><div class="panel-heading"><div class="row-fluid"><div class="span6 pull-left">Deployment Environment</div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-remove-deployment-environment"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Remove</button></div></div></div><div class="panel-body">';
-	htmlToAppend += '<label for="select-deployment-environment-type">Type</label><select class="form-control" id="select-deployment-environment-type"><option value="">No preference</option><option value="indoor">Indoor</option><option value="outdoor">Outdoor</option><option value="mixed">Mixed</option></select>';
-	htmlToAppend += '<label for="select-deployment-environment-context">Context</label><select class="form-control" id="select-deployment-environment-context"><option value="">No preference</option><option value="seaside">Seaside</option><option value="country">Country</option><option value="tropicalarea">Tropical area</option><option value="aridarea">Arid area</option><option value="other">Other</option></select>';
-	htmlToAppend += '<label for="select-deployment-environment-location-type">Location Type</label><select class="form-control" id="select-deployment-environment-location-type"><option value="">No preference</option><option value="urban">Urban</option><option value="suburban">Suburban</option><option value="countryside">Countryside</option><option value="residential">Residential</option><option value="industrial">Industrial</option><option value="other">Other</option></select>';
+	htmlToAppend += '<label for="select-deployment-environment-type">Type</label><select class="form-control select-deployment-environment-type" id="select-deployment-environment-type"><option value="">No preference</option><option value="indoor">Indoor</option><option value="outdoor">Outdoor</option><option value="mixed">Mixed</option></select>';
+	htmlToAppend += '<label for="select-deployment-environment-context">Context</label><select class="form-control select-deployment-environment-context" id="select-deployment-environment-context"><option value="">No preference</option><option value="seaside">Seaside</option><option value="country">Country</option><option value="tropicalarea">Tropical area</option><option value="aridarea">Arid area</option><option value="other">Other</option></select>';
+	htmlToAppend += '<label for="select-deployment-environment-location-type">Location Type</label><select class="form-control select-deployment-environment-location-type" id="select-deployment-environment-location-type"><option value="">No preference</option><option value="urban">Urban</option><option value="suburban">Suburban</option><option value="countryside">Countryside</option><option value="residential">Residential</option><option value="industrial">Industrial</option><option value="other">Other</option></select>';
 	htmlToAppend += '<h3>Areas</h3><div class="row-fluid"><div class="span6 pull-left"><p>Here you can add, remove and configure areas for your deployment environment</p></div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-add-area"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add</button></div></div><div id="area-container"></div></div></div></div>';
 	$('#deployment-environment-container').append(htmlToAppend);
 }).on('click', '#button-remove-deployment-environment', function() {
@@ -325,20 +332,20 @@ $('body').on('click', '#button-add-deployment-environment', function() {
 }).on('click', '#button-add-area', function() {
 	var divAreaContainer = $(this).parent().parent().parent().find('#area-container');
 	var htmlToAppend = '<div class="panel-group"><div class="panel panel-warning"><div class="panel-heading"><div class="row-fluid"><div class="span6 pull-left">Area</div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-remove-area"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Remove</button></div></div></div><div class="panel-body">';
-	htmlToAppend += '<label for="select-area-type">Type</label><select class="form-control" id="select-area-type"><option value="">No preference</option><option value="indoor">Indoor</option><option value="outdoor">Outdoor</option><option value="mixed">Mixed</option></select>';
-	htmlToAppend += '<label for="select-area-category">Category</label><select class="form-control" id="select-area-category"><option value="">No preference</option><option value="industry">Industry</option><option value="shop">Shop</option><option value="gym">Gym</option><option value="pub">Pub</option><option value="library">Library</option><option value="hospital">Hospital</option><option value="residential">Residential</option><option value="school">School</option><option value="publicoffice">Public Office</option><option value="monument">Monument</option><option value="road">Road</option><option value="countryfield">Country Field</option><option value="sensitivearea">Sensitive Area</option><option value="childrenspace">Children Space</option><option value="other">Other</option></select>';
-	htmlToAppend += '<label for="select-area-prefabricatedbuilding">Prefabricated Building</label><select class="form-control" id="select-area-prefabricatedbuilding"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
-	htmlToAppend += '<label for="select-area-vehicletraffic">Vehicle Traffic</label><select class="form-control" id="select-area-vehicletraffic"><option value="">No preference</option><option value="none">None</option><option value="light">Light</option><option value="medium">Medium</option><option value="heavy">Heavy</option></select>';
-	htmlToAppend += '<label for="select-area-industrialtype">Industrial Type</label><select class="form-control" id="select-area-industrialtype"><option value="">No preference</option><option value="notapplicable">Not Applicable</option><option value="chemical">Chemical</option><option value="siderurgic">Siderurgic</option><option value="heavy">Heavy</option><option value="sme">SME</option></select>';
-	htmlToAppend += '<label for="select-area-pollutedsoil">Polluted Soil</label><select class="form-control" id="select-area-pollutedsoil"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
-	htmlToAppend += '<label for="select-area-floor">Floor</label><select class="form-control" id="select-area-floor"><option value="">No preference</option><option value="0">Ground</option><option value="1">Upper</option></select>';
-	htmlToAppend += '<label for="select-area-controlledarea">Controlled Area</label><select class="form-control" id="select-area-controlledarea"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
-	htmlToAppend += '<label for="select-area-airconditioning">Air Conditioning</label><select class="form-control" id="select-area-airconditioning"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
-	htmlToAppend += '<label for="select-area-heatingsystem">Heating System</label><select class="form-control" id="select-area-heatingsystem"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
-	htmlToAppend += '<label for="select-area-windows">Windows</label><select class="form-control" id="select-area-windows"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
-	htmlToAppend += '<label for="select-area-smokepresence">Smoke Presence</label><select class="form-control" id="select-area-smokepresence"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
-	htmlToAppend += '<label for="select-area-moldpresence">Mold Presence</label><select class="form-control" id="select-area-moldpresence"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
-	htmlToAppend += '<label for="select-area-dustyarea">Dusty Area</label><select class="form-control" id="select-area-dustyarea"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-area-type">Type</label><select class="form-control select-area-type" id="select-area-type"><option value="">No preference</option><option value="indoor">Indoor</option><option value="outdoor">Outdoor</option><option value="mixed">Mixed</option></select>';
+	htmlToAppend += '<label for="select-area-category">Category</label><select class="form-control select-area-category" id="select-area-category"><option value="">No preference</option><option value="industry">Industry</option><option value="shop">Shop</option><option value="gym">Gym</option><option value="pub">Pub</option><option value="library">Library</option><option value="hospital">Hospital</option><option value="residential">Residential</option><option value="school">School</option><option value="publicoffice">Public Office</option><option value="monument">Monument</option><option value="road">Road</option><option value="countryfield">Country Field</option><option value="sensitivearea">Sensitive Area</option><option value="childrenspace">Children Space</option><option value="other">Other</option></select>';
+	htmlToAppend += '<label for="select-area-prefabricatedbuilding">Prefabricated Building</label><select class="form-control select-area-prefabricatedbuilding" id="select-area-prefabricatedbuilding"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-area-vehicletraffic">Vehicle Traffic</label><select class="form-control select-area-vehicletraffic" id="select-area-vehicletraffic"><option value="">No preference</option><option value="none">None</option><option value="light">Light</option><option value="medium">Medium</option><option value="heavy">Heavy</option></select>';
+	htmlToAppend += '<label for="select-area-industrialtype">Industrial Type</label><select class="form-control select-area-industrialtype" id="select-area-industrialtype"><option value="">No preference</option><option value="notapplicable">Not Applicable</option><option value="chemical">Chemical</option><option value="siderurgic">Siderurgic</option><option value="heavy">Heavy</option><option value="sme">SME</option></select>';
+	htmlToAppend += '<label for="select-area-pollutedsoil">Polluted Soil</label><select class="form-control select-area-pollutedsoil" id="select-area-pollutedsoil"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-area-floor">Floor</label><select class="form-control select-area-floor" id="select-area-floor"><option value="">No preference</option><option value="0">Ground</option><option value="1">Upper</option></select>';
+	htmlToAppend += '<label for="select-area-controlledarea">Controlled Area</label><select class="form-control select-area-controlledarea" id="select-area-controlledarea"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-area-airconditioning">Air Conditioning</label><select class="form-control select-area-airconditioning" id="select-area-airconditioning"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-area-heatingsystem">Heating System</label><select class="form-control select-area-heatingsystem" id="select-area-heatingsystem"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-area-windows">Windows</label><select class="form-control select-area-windows" id="select-area-windows"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-area-smokepresence">Smoke Presence</label><select class="form-control select-area-smokepresence" id="select-area-smokepresence"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-area-moldpresence">Mold Presence</label><select class="form-control select-area-moldpresence" id="select-area-moldpresence"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-area-dustyarea">Dusty Area</label><select class="form-control select-area-dustyarea" id="select-area-dustyarea"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
 	htmlToAppend += '<h3>Environmental Conditions</h3><div class="row-fluid"><div class="span6 pull-left"><p>Here you can add, remove and configure environmental conditions for your area</p></div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-add-environmental-condition"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add</button></div></div><div id="environmental-condition-container"></div>';
 	htmlToAppend += '<h3>Wall Types</h3><div class="row-fluid"><div class="span6 pull-left"><p>Here you can add, remove and configure wall types for your area</p></div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-add-wall-type"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add</button></div></div><div id="wall-type-container"></div>';
 	htmlToAppend += '</div></div></div>';
@@ -349,15 +356,15 @@ $('body').on('click', '#button-add-deployment-environment', function() {
 }).on('click', '#button-add-environmental-condition', function() {
 	var divEnvironmentalConditionContainer = $(this).parent().parent().parent().find('#environmental-condition-container');
 	var htmlToAppend = '<div class="panel-group"><div class="panel panel-warning"><div class="panel-heading"><div class="row-fluid"><div class="span6 pull-left">Environmental Condition</div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-remove-environmental-condition"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Remove</button></div></div></div><div class="panel-body">';
-	htmlToAppend += '<label for="select-environmental-condition-humidity">Humidity (0-10)</label><input type="number" class="form-control" id="select-environmental-condition-humidity" min="0" max="10"></input>';
-	htmlToAppend += '<label for="select-environmental-condition-windspeed">Wind Speed (0-10)</label><input type="number" class="form-control" id="select-environmental-condition-windspeed" min="0" max="10"></input>';
-	htmlToAppend += '<label for="select-environmental-condition-rain">Rain</label><select class="form-control" id="select-environmental-condition-rain"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
-	htmlToAppend += '<label for="select-environmental-condition-dust">Dust</label><select class="form-control" id="select-environmental-condition-dust"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
-	htmlToAppend += '<label for="select-environmental-condition-averagetemperature">Average Temperature (-50..50)</label><input type="number" class="form-control" id="select-environmental-condition-averagetemperature" min="-50" max="50"></input>';
-	htmlToAppend += '<label for="select-environmental-condition-snow">Snow</label><select class="form-control" id="select-environmental-condition-snow"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
-	htmlToAppend += '<label for="select-environmental-condition-ice">Ice</label><select class="form-control" id="select-environmental-condition-ice"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
-	htmlToAppend += '<label for="select-environmental-condition-vibrations">Vibrations</label><select class="form-control" id="select-environmental-condition-vibrations"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
-	htmlToAppend += '<label for="select-environmental-condition-averagepressure">Average Pressure (0..10)</label><input type="number" class="form-control" id="select-environmental-condition-averagepressure" min="0" max="10"></input>';
+	htmlToAppend += '<label for="select-environmental-condition-humidity">Humidity (0-10)</label><input type="number" class="form-control select-environmental-condition-humidity" id="select-environmental-condition-humidity" min="0" max="10"></input>';
+	htmlToAppend += '<label for="select-environmental-condition-windspeed">Wind Speed (0-10)</label><input type="number" class="form-control select-environmental-condition-windspeed" id="select-environmental-condition-windspeed" min="0" max="10"></input>';
+	htmlToAppend += '<label for="select-environmental-condition-rain">Rain</label><select class="form-control select-environmental-condition-rain" id="select-environmental-condition-rain"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-environmental-condition-dust">Dust</label><select class="form-control select-environmental-condition-dust" id="select-environmental-condition-dust"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-environmental-condition-averagetemperature">Average Temperature (-50..50)</label><input type="number" class="form-control select-environmental-condition-averagetemperature" id="select-environmental-condition-averagetemperature" min="-50" max="50"></input>';
+	htmlToAppend += '<label for="select-environmental-condition-snow">Snow</label><select class="form-control select-environmental-condition-snow" id="select-environmental-condition-snow"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-environmental-condition-ice">Ice</label><select class="form-control select-environmental-condition-ice" id="select-environmental-condition-ice"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-environmental-condition-vibrations">Vibrations</label><select class="form-control select-environmental-condition-vibrations" id="select-environmental-condition-vibrations"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-environmental-condition-averagepressure">Average Pressure (0..10)</label><input type="number" class="form-control select-environmental-condition-averagepressure" id="select-environmental-condition-averagepressure" min="0" max="10"></input>';
 	// TODO
 	htmlToAppend += '</div></div></div>';
 	divEnvironmentalConditionContainer.append(htmlToAppend);
@@ -367,18 +374,20 @@ $('body').on('click', '#button-add-deployment-environment', function() {
 }).on('click', '#button-add-wall-type', function() {
 	var divWallTypeContainer = $(this).parent().parent().parent().find('#wall-type-container');
 	var htmlToAppend = '<div class="panel-group"><div class="panel panel-warning"><div class="panel-heading"><div class="row-fluid"><div class="span6 pull-left">Wall Type</div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-remove-wall-type"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Remove</button></div></div></div><div class="panel-body">';
-	htmlToAppend += '<label for="select-wall-type-wallpaper">Wallpaper</label><select class="form-control" id="select-wall-type-wallpaper"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
-	htmlToAppend += '<label for="select-wall-type-plasticcladding">Plastic Cladding</label><select class="form-control" id="select-wall-type-plasticcladding"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
-	htmlToAppend += '<label for="select-wall-type-woodenpanels">Wooden Panels</label><select class="form-control" id="select-wall-type-woodenpanels"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
-	htmlToAppend += '<label for="select-wall-type-moquette">Moquette</label><select class="form-control" id="select-wall-type-moquette"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
-	htmlToAppend += '<label for="select-wall-type-tiles">Tiles</label><select class="form-control" id="select-wall-type-tiles"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
-	htmlToAppend += '<label for="select-wall-type-plaster">Plaster</label><select class="form-control" id="select-wall-type-plaster"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-wall-type-wallpaper">Wallpaper</label><select class="form-control select-wall-type-wallpaper" id="select-wall-type-wallpaper"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-wall-type-plasticcladding">Plastic Cladding</label><select class="form-control select-wall-type-plasticcladding" id="select-wall-type-plasticcladding"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-wall-type-woodenpanels">Wooden Panels</label><select class="form-control select-wall-type-woodenpanels" id="select-wall-type-woodenpanels"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-wall-type-moquette">Moquette</label><select class="form-control select-wall-type-moquette" id="select-wall-type-moquette"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-wall-type-tiles">Tiles</label><select class="form-control select-wall-type-tiles" id="select-wall-type-tiles"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
+	htmlToAppend += '<label for="select-wall-type-plaster">Plaster</label><select class="form-control select-wall-type-plaster" id="select-wall-type-plaster"><option value="">No preference</option><option value="yes">Yes</option><option value="no">No</option></select>';
 	htmlToAppend += '</div></div></div>';
 	divWallTypeContainer.append(htmlToAppend);
 }).on('click', '#button-remove-wall-type', function() {
 	var divWallTypeContainer = $(this).parent().parent().parent().parent().parent();
 	divWallTypeContainer.remove();
 }).on('click', '#button-get-configs', function() {
+	clearDiagnosis();
+	
 	$('div#solutions').html('');
 	
 	var monitoringStationObject = {
@@ -463,12 +472,15 @@ $('body').on('click', '#button-add-deployment-environment', function() {
 				$('div#solutions').html('<img src="img/loading.gif" class="img-responsive center-block"></img>');
 			},
 			success: function(data) {
-				console.log(data);
-				
 				var solutionsCode = '';
 				
 				if (data.length == 0) {
 					solutionsCode += '<div class="alert alert-danger"><strong>No solutions found.</strong></div>';
+					userRequirementsJson = JSON.stringify(monitoringStationObject);
+					$('button#button-get-diag').prop('disabled', false);
+				} else {
+					userRequirementsJson = '';
+					$('button#button-get-diag').prop('disabled', true);
 				}
 
 				$.each(data, function(s, solution) {
@@ -631,7 +643,28 @@ $('body').on('click', '#button-add-deployment-environment', function() {
 	} else {
 		alert('You have not added any deployment environments!');
 	}
+}).on('click', '#button-get-diag', function() {
+	if (userRequirementsJson != '') {
+		$.ajax({
+			url: '../rest/diagnosis/',
+			datatype: 'application/json',
+			type: 'POST',
+			contentType: 'application/json; charset=utf-8',
+			data: userRequirementsJson,
+			success: function(data) {
+				clearDiagnosis();
+				
+				$.each(data.diagnosisParts, function(dp, diagnosisPart) {
+					var selector = diagnosisPart.split('POS')[0];
+					var position = diagnosisPart.split('POS')[1];
+					$(selector).eq(position).addClass('btn-danger');
+				});
+			}
+		});
+	}
+	$('button#button-get-diag').prop('disabled', true);
 });
+
 </script>
 </body>
 </html>

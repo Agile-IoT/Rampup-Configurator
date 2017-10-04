@@ -55,6 +55,64 @@ public class ClingoExecutor {
 		return parseClingoOutput(clingoOutput);
 	}
 	
+	public ArrayList<String> createDiagnosis (MonitoringStation userRequirements) {
+		ArrayList<String> userConstraintList = createUserConstraintList(userRequirements);
+		
+		// if isEmpty(C) or inconsistent(AC – C) return null
+		if (userConstraintList.isEmpty() || !isConsistent(getClingoProgram())) {
+			return null;
+		// else return FD(null, C, AC);
+		} else {
+			ArrayList<String> ac = new ArrayList<String>();
+			ac.add(getClingoProgram());
+			ac.addAll(userConstraintList);
+			return fastDiag(null, userConstraintList, ac);
+		}
+	}
+	
+	private boolean isConsistent(String program) {
+		if (parseClingoOutput(executeClingo(program)).size() >= 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	private boolean isConsistent(ArrayList<String> constraints) {
+		String program = "";
+		for (String constraint : constraints) {
+			program += constraint + "\n";
+		}
+		return isConsistent(program);
+	}
+	
+	private ArrayList<String> subtract(ArrayList<String> first, ArrayList<String> second) {
+		@SuppressWarnings("unchecked")
+		ArrayList<String> result = (ArrayList<String>) first.clone();
+		if (second != null) {
+			result.removeAll(second);
+		}
+		return result;
+	}
+	
+	private ArrayList<String> union(ArrayList<String> first, ArrayList<String> second) {
+		if (second != null) {
+			if (first != null) {
+				@SuppressWarnings("unchecked")
+				ArrayList<String> result = (ArrayList<String>) first.clone();
+				for (String constraint : second) {
+					if (!result.contains(constraint)) {
+						result.add(constraint);
+					}
+				}
+				return result;
+			} else {
+				return second;
+			}
+		} else {
+			return first;
+		}
+	}
+	
 	private String getClingoProgram() {
 		String result = "";
 		BufferedReader br = null;
@@ -95,106 +153,116 @@ public class ClingoExecutor {
 	private String generateUserReqProgram(MonitoringStation userRequirements) {
 		String program = "";
 		
+		for (String userConstraint : createUserConstraintList(userRequirements)) {
+			program += userConstraint + "\n";
+		}
+		
+		return program;
+	}
+	
+	private ArrayList<String> createUserConstraintList(MonitoringStation userRequirements) {
+		ArrayList<String> userConstraints = new ArrayList<String>();
+		
 		// monitoring station
 		if (!userRequirements.getCommunication().equals(""))
-			program += "attributevalue_type_monitoringstation_communication(" + userRequirements.getId() + "," + userRequirements.getCommunication() + ").\n";
+			userConstraints.add("attributevalue_type_monitoringstation_communication(" + userRequirements.getId() + "," + userRequirements.getCommunication() + ").");
 		if (!userRequirements.getLocalStorage().equals(""))
-			program += "attributevalue_type_monitoringstation_localstorage(" + userRequirements.getId() + "," + userRequirements.getLocalStorage() + ").\n";
+			userConstraints.add("attributevalue_type_monitoringstation_localstorage(" + userRequirements.getId() + "," + userRequirements.getLocalStorage() + ").");
 		if (!userRequirements.getCloudStorage().equals(""))
-			program += "attributevalue_type_monitoringstation_cloudstorage(" + userRequirements.getId() + "," + userRequirements.getCloudStorage() + ").\n";
+			userConstraints.add("attributevalue_type_monitoringstation_cloudstorage(" + userRequirements.getId() + "," + userRequirements.getCloudStorage() + ").");
 		if (!userRequirements.getEnclosure().equals(""))
-			program += "attributevalue_type_monitoringstation_enclosure(" + userRequirements.getId() + "," + userRequirements.getEnclosure() + ").\n";
+			userConstraints.add("attributevalue_type_monitoringstation_enclosure(" + userRequirements.getId() + "," + userRequirements.getEnclosure() + ").");
 		
 		// deployment environments
 		for (DeploymentEnvironment deploymentEnvironment : userRequirements.getDeploymentEnvironments()) {
-			program += "type_deploymentenvironment(" + deploymentEnvironment.getId() + ").\n";
-			program += "assoc_type_monitoringstation_and_type_deploymentenvironment(" + userRequirements.getId() + "," + deploymentEnvironment.getId() + ").\n";
+			userConstraints.add("type_deploymentenvironment(" + deploymentEnvironment.getId() + ").");
+			userConstraints.add("assoc_type_monitoringstation_and_type_deploymentenvironment(" + userRequirements.getId() + "," + deploymentEnvironment.getId() + ").");
 			if (!deploymentEnvironment.getType().equals(""))
-				program += "attributedomain_type_deploymentenvironment_type(" + deploymentEnvironment.getId() + "," + deploymentEnvironment.getType() + ").\n";
+				userConstraints.add("attributevalue_type_deploymentenvironment_type(" + deploymentEnvironment.getId() + "," + deploymentEnvironment.getType() + ").");
 			if (!deploymentEnvironment.getContext().equals(""))
-				program += "attributedomain_type_deploymentenvironment_context(" + deploymentEnvironment.getId() + "," + deploymentEnvironment.getContext() + ").\n";
+				userConstraints.add("attributevalue_type_deploymentenvironment_context(" + deploymentEnvironment.getId() + "," + deploymentEnvironment.getContext() + ").");
 			if (!deploymentEnvironment.getLocationType().equals(""))
-				program += "attributedomain_type_deploymentenvironment_locationtype(" + deploymentEnvironment.getId() + "," + deploymentEnvironment.getLocationType() + ").\n";
+				userConstraints.add("attributevalue_type_deploymentenvironment_locationtype(" + deploymentEnvironment.getId() + "," + deploymentEnvironment.getLocationType() + ").");
 			
 			// areas
 			for (Area area : deploymentEnvironment.getAreas()) {
-				program += "type_area(" + area.getId() + ").\n";
-				program += "assoc_type_deploymentenvironment_and_type_area(" + deploymentEnvironment.getId() + "," + area.getId() + ").\n";
+				userConstraints.add("type_area(" + area.getId() + ").");
+				userConstraints.add("assoc_type_deploymentenvironment_and_type_area(" + deploymentEnvironment.getId() + "," + area.getId() + ").");
 				
 				if (!area.getType().equals(""))
-					program += "attributevalue_type_area_type(" + area.getId() + "," + area.getType() + ").\n";
+					userConstraints.add("attributevalue_type_area_type(" + area.getId() + "," + area.getType() + ").");
 				if (!area.getCategory().equals(""))
-					program += "attributevalue_type_area_category(" + area.getId() + "," + area.getCategory() + ").\n";
+					userConstraints.add("attributevalue_type_area_category(" + area.getId() + "," + area.getCategory() + ").");
 				if (!area.getPrefabricatedBuilding().equals(""))
-					program += "attributevalue_type_area_prefabricatedbuilding(" + area.getId() + "," + area.getPrefabricatedBuilding() + ").\n";
+					userConstraints.add("attributevalue_type_area_prefabricatedbuilding(" + area.getId() + "," + area.getPrefabricatedBuilding() + ").");
 				if (!area.getVehicleTraffic().equals(""))
-					program += "attributevalue_type_area_vehicletraffic(" + area.getId() + "," + area.getVehicleTraffic() + ").\n";
+					userConstraints.add("attributevalue_type_area_vehicletraffic(" + area.getId() + "," + area.getVehicleTraffic() + ").");
 				if (!area.getIndustrialType().equals(""))
-					program += "attributevalue_type_area_industrialtype(" + area.getId() + "," + area.getIndustrialType() + ").\n";
+					userConstraints.add("attributevalue_type_area_industrialtype(" + area.getId() + "," + area.getIndustrialType() + ").");
 				if (!area.getPollutedSoil().equals(""))
-					program += "attributevalue_type_area_pollutedsoil(" + area.getId() + "," + area.getPollutedSoil() + ").\n";
+					userConstraints.add("attributevalue_type_area_pollutedsoil(" + area.getId() + "," + area.getPollutedSoil() + ").");
 				if (!area.getFloor().equals(""))
-					program += "attributevalue_type_area_floor(" + area.getId() + "," + area.getFloor() + ").\n";
+					userConstraints.add("attributevalue_type_area_floor(" + area.getId() + "," + area.getFloor() + ").");
 				if (!area.getControlledArea().equals(""))
-					program += "attributevalue_type_area_controlledarea(" + area.getId() + "," + area.getControlledArea() + ").\n";
+					userConstraints.add("attributevalue_type_area_controlledarea(" + area.getId() + "," + area.getControlledArea() + ").");
 				if (!area.getAirConditioning().equals(""))
-					program += "attributevalue_type_area_airconditioning(" + area.getId() + "," + area.getAirConditioning() + ").\n";
+					userConstraints.add("attributevalue_type_area_airconditioning(" + area.getId() + "," + area.getAirConditioning() + ").");
 				if (!area.getHeatingSystem().equals(""))
-					program += "attributevalue_type_area_heatingsystem(" + area.getId() + "," + area.getHeatingSystem() + ").\n";
+					userConstraints.add("attributevalue_type_area_heatingsystem(" + area.getId() + "," + area.getHeatingSystem() + ").");
 				if (!area.getWindows().equals(""))
-					program += "attributevalue_type_area_windows(" + area.getId() + "," + area.getWindows() + ").\n";
+					userConstraints.add("attributevalue_type_area_windows(" + area.getId() + "," + area.getWindows() + ").");
 				if (!area.getSmokePresence().equals(""))
-					program += "attributevalue_type_area_smokepresence(" + area.getId() + "," + area.getSmokePresence() + ").\n";
+					userConstraints.add("attributevalue_type_area_smokepresence(" + area.getId() + "," + area.getSmokePresence() + ").");
 				if (!area.getMoldPresence().equals(""))
-					program += "attributevalue_type_area_moldpresence(" + area.getId() + "," + area.getMoldPresence() + ").\n";
+					userConstraints.add("attributevalue_type_area_moldpresence(" + area.getId() + "," + area.getMoldPresence() + ").");
 				if (!area.getDustyArea().equals(""))
-					program += "attributevalue_type_area_dustyarea(" + area.getId() + "," + area.getDustyArea() + ").\n";
+					userConstraints.add("attributevalue_type_area_dustyarea(" + area.getId() + "," + area.getDustyArea() + ").");
 				
 				// environmental conditions
 				for (EnvironmentalCondition environmentalCondition : area.getEnvironmentalConditions()) {
-					program += "type_environmetalconditions(" + environmentalCondition.getId() + ").\n";
-					program += "assoc_type_area_and_type_environmetalconditions(" + area.getId() + "," + environmentalCondition.getId() + ").\n";
+					userConstraints.add("type_environmetalconditions(" + environmentalCondition.getId() + ").");
+					userConstraints.add("assoc_type_area_and_type_environmetalconditions(" + area.getId() + "," + environmentalCondition.getId() + ").");
 					if (!environmentalCondition.getHumidity().equals(""))
-						program += "attributedomain_type_environmetalconditions_humidity(" + environmentalCondition.getId() + "," + environmentalCondition.getHumidity() + ").\n";
+						userConstraints.add("attributevalue_type_environmetalconditions_humidity(" + environmentalCondition.getId() + "," + environmentalCondition.getHumidity() + ").");
 					if (!environmentalCondition.getWindSpeed().equals(""))
-						program += "attributedomain_type_environmetalconditions_windspeed(" + environmentalCondition.getId() + "," + environmentalCondition.getWindSpeed() + ").\n";
+						userConstraints.add("attributevalue_type_environmetalconditions_windspeed(" + environmentalCondition.getId() + "," + environmentalCondition.getWindSpeed() + ").");
 					if (!environmentalCondition.getRain().equals(""))
-						program += "attributedomain_type_environmetalconditions_rain(" + environmentalCondition.getId() + "," + environmentalCondition.getRain() + ").\n";
+						userConstraints.add("attributevalue_type_environmetalconditions_rain(" + environmentalCondition.getId() + "," + environmentalCondition.getRain() + ").");
 					if (!environmentalCondition.getDust().equals(""))
-						program += "attributedomain_type_environmetalconditions_dust(" + environmentalCondition.getId() + "," + environmentalCondition.getDust() + ").\n";
+						userConstraints.add("attributevalue_type_environmetalconditions_dust(" + environmentalCondition.getId() + "," + environmentalCondition.getDust() + ").");
 					if (!environmentalCondition.getAvgTemperature().equals(""))
-						program += "attributedomain_type_environmetalconditions_averagetemperature(" + environmentalCondition.getId() + "," + environmentalCondition.getAvgTemperature() + ").\n";
+						userConstraints.add("attributevalue_type_environmetalconditions_averagetemperature(" + environmentalCondition.getId() + "," + environmentalCondition.getAvgTemperature() + ").");
 					if (!environmentalCondition.getSnow().equals(""))
-						program += "attributedomain_type_environmetalconditions_snow(" + environmentalCondition.getId() + "," + environmentalCondition.getSnow() + ").\n";
+						userConstraints.add("attributevalue_type_environmetalconditions_snow(" + environmentalCondition.getId() + "," + environmentalCondition.getSnow() + ").");
 					if (!environmentalCondition.getIce().equals(""))
-						program += "attributedomain_type_environmetalconditions_ice(" + environmentalCondition.getId() + "," + environmentalCondition.getIce() + ").\n";
+						userConstraints.add("attributevalue_type_environmetalconditions_ice(" + environmentalCondition.getId() + "," + environmentalCondition.getIce() + ").");
 					if (!environmentalCondition.getVibrations().equals(""))
-						program += "attributedomain_type_environmetalconditions_vibrations(" + environmentalCondition.getId() + "," + environmentalCondition.getVibrations() + ").\n";
+						userConstraints.add("attributevalue_type_environmetalconditions_vibrations(" + environmentalCondition.getId() + "," + environmentalCondition.getVibrations() + ").");
 					if (!environmentalCondition.getAvgPressure().equals(""))
-						program += "attributedomain_type_environmetalconditions_averagepressure(" + environmentalCondition.getId() + "," + environmentalCondition.getAvgPressure() + ").\n";
+						userConstraints.add("attributevalue_type_environmetalconditions_averagepressure(" + environmentalCondition.getId() + "," + environmentalCondition.getAvgPressure() + ").");
 				}
 				
 				// wall types
 				for (WallType wallType : area.getWallTypes()) {
-					program += "type_walltype(" + wallType.getId() + ").\n";
-					program += "assoc_type_area_and_type_walltype(" + area.getId() + "," + wallType.getId() + ").\n";
+					userConstraints.add("type_walltype(" + wallType.getId() + ").");
+					userConstraints.add("assoc_type_area_and_type_walltype(" + area.getId() + "," + wallType.getId() + ").");
 					if (!wallType.getWallpaper().equals(""))
-						program += "attributevalue_type_walltype_wallpaper(" + wallType.getId() + "," + wallType.getWallpaper() + ").\n";
+						userConstraints.add("attributevalue_type_walltype_wallpaper(" + wallType.getId() + "," + wallType.getWallpaper() + ").");
 					if (!wallType.getPlasticCladding().equals(""))
-						program += "attributevalue_type_walltype_plasticcladding(" + wallType.getId() + "," + wallType.getPlasticCladding() + ").\n";
+						userConstraints.add("attributevalue_type_walltype_plasticcladding(" + wallType.getId() + "," + wallType.getPlasticCladding() + ").");
 					if (!wallType.getWoodenPanels().equals(""))
-						program += "attributevalue_type_walltype_woodenpanels(" + wallType.getId() + "," + wallType.getWoodenPanels() + ").\n";
+						userConstraints.add("attributevalue_type_walltype_woodenpanels(" + wallType.getId() + "," + wallType.getWoodenPanels() + ").");
 					if (!wallType.getMoquette().equals(""))
-						program += "attributevalue_type_walltype_moquette(" + wallType.getId() + "," + wallType.getMoquette() + ").\n";
+						userConstraints.add("attributevalue_type_walltype_moquette(" + wallType.getId() + "," + wallType.getMoquette() + ").");
 					if (!wallType.getTiles().equals(""))
-						program += "attributevalue_type_walltype_tiles(" + wallType.getId() + "," + wallType.getTiles() + ").\n";
+						userConstraints.add("attributevalue_type_walltype_tiles(" + wallType.getId() + "," + wallType.getTiles() + ").");
 					if (!wallType.getPlaster().equals(""))
-						program += "attributevalue_type_walltype_plaster(" + wallType.getId() + "," + wallType.getPlaster() + ").\n";
+						userConstraints.add("attributevalue_type_walltype_plaster(" + wallType.getId() + "," + wallType.getPlaster() + ").");
 				}
 			}
 		}
 		
-		return program;
+		return userConstraints;
 	}
 	
 	private String executeClingo(String program) {
@@ -229,6 +297,40 @@ public class ClingoExecutor {
 		}
 		
 		return result;
+	}
+	
+	private ArrayList<String> fastDiag(ArrayList<String> d, ArrayList<String> c, ArrayList<String> ac) {
+		// if D != null and consistent(AC) return null;
+		if (d != null && isConsistent(ac)) {
+			return null;
+		}
+		// if singleton(C) return C;
+		if (isSingleton(c)) {
+			return c;
+		}
+		// k = q/2;
+		int q = c.size();
+		int k = q / 2;
+		// C1 = {c1..ck}; C2 = {ck+1..cq};
+		ArrayList<String> c1 = new ArrayList<String>();
+		ArrayList<String> c2 = new ArrayList<String>();
+		c1.addAll(c.subList(0, k));
+		c2.addAll(c.subList(k, q));
+		// D1 = FD(C1, C2, AC - C1);
+		ArrayList<String> d1 = fastDiag(c1, c2, subtract(ac, c1));
+		// D2 = FD(D1, C1, AC - D1);
+		ArrayList<String> d2 = fastDiag(d1, c1, subtract(ac, d1));
+		
+		// return(D1 U D2);
+		return union(d1, d2);
+	}
+	
+	private boolean isSingleton(ArrayList<String> c) {
+		if (c.size() == 1) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	private ArrayList<MonitoringStation> parseClingoOutput(String clingoOutput) {
