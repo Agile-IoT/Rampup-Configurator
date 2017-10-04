@@ -205,14 +205,16 @@ Contributors:
 </div>
 
 <button type="button" class="btn btn-primary btn-block" id="button-get-configs">Get configurations</button>
-<button type="button" class="btn btn-primary btn-block" id="button-get-diag" disabled>Get diagnosis</button>
+<button type="button" class="btn btn-primary btn-block" id="button-get-diag">Show feasible alternatives</button>
 
 <h1>Available Configurations</h1>
-<p>Here you can see up to ten possible configurations according to your input.</p>
+<p>Here you can see a possible configuration according to your input.</p>
 
 <div id="solutions"></div>
 
 <script>
+$('#button-get-diag').hide();
+
 function standardizeNames(name) {
 	switch(name) {
 	case 'steel':
@@ -337,10 +339,10 @@ $('body').on('click', '#button-add-room', function() {
 				if (data.length == 0) {
 					solutionsCode += '<div class="alert alert-danger"><strong>No solutions found.</strong></div>';
 					userRequirementsJson = JSON.stringify(userRequirementsObject);
-					$('button#button-get-diag').prop('disabled', false);
+					$('button#button-get-diag').show();
 				} else {
 					userRequirementsJson = '';
-					$('button#button-get-diag').prop('disabled', true);
+					$('button#button-get-diag').hide();
 				}
 
 				$.each(data, function(s, solution) {
@@ -400,7 +402,7 @@ $('body').on('click', '#button-add-room', function() {
 			}
 		});
 	}
-	$('button#button-get-diag').prop('disabled', true);
+	$('button#button-get-diag').hide();
 });
 
 </script>

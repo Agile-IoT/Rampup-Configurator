@@ -112,14 +112,16 @@ Contributors:
 </div>
 
 <button type="button" class="btn btn-primary btn-block" id="button-get-configs">Get configurations</button>
-<button type="button" class="btn btn-primary btn-block" id="button-get-diag" disabled>Get diagnosis</button>
+<button type="button" class="btn btn-primary btn-block" id="button-get-diag">Show feasible alternatives</button>
 
 <h1>Available Configurations</h1>
-<p>Here you can see up to ten possible configurations according to your input.</p>
+<p>Here you can see a possible configuration according to your input.</p>
 
 <div id="solutions"></div>
 
 <script>
+$('#button-get-diag').hide();
+
 function standardizeNames(name) {
 	switch(name) {
 	case 'a':
@@ -475,12 +477,12 @@ $('body').on('click', '#button-add-deployment-environment', function() {
 				var solutionsCode = '';
 				
 				if (data.length == 0) {
-					solutionsCode += '<div class="alert alert-danger"><strong>No solutions found.</strong></div>';
+					solutionsCode += '<div class="alert alert-danger"><strong>No solutions found. You can press <em>Show feasible alternatives</em>.</strong></div>';
 					userRequirementsJson = JSON.stringify(monitoringStationObject);
-					$('button#button-get-diag').prop('disabled', false);
+					$('button#button-get-diag').show();
 				} else {
 					userRequirementsJson = '';
-					$('button#button-get-diag').prop('disabled', true);
+					$('button#button-get-diag').hide();
 				}
 
 				$.each(data, function(s, solution) {
@@ -651,6 +653,9 @@ $('body').on('click', '#button-add-deployment-environment', function() {
 			type: 'POST',
 			contentType: 'application/json; charset=utf-8',
 			data: userRequirementsJson,
+			beforeSend: function() {
+				$('div#solutions').html('<img src="img/loading.gif" class="img-responsive center-block"></img>');
+			},
 			success: function(data) {
 				clearDiagnosis();
 				
@@ -659,10 +664,11 @@ $('body').on('click', '#button-add-deployment-environment', function() {
 					var position = diagnosisPart.split('POS')[1];
 					$(selector).eq(position).addClass('btn-danger');
 				});
+				$('div#solutions').html('<div class="alert alert-info"><strong>The setting(s) that should be changed in order to get a feasible alterative is/are marked above.</strong></div>');
 			}
 		});
 	}
-	$('button#button-get-diag').prop('disabled', true);
+	$('button#button-get-diag').hide();
 });
 
 </script>
