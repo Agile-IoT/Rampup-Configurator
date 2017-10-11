@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -14,7 +15,9 @@ import javax.ws.rs.core.Response;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import at.tugraz.ist.ase.polmon.ClingoExecutor;
 import at.tugraz.ist.ase.polmon.classes.MonitoringStation;
@@ -44,14 +47,14 @@ public class DiagSvc {
 	@POST
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response makeDiagnosis(String userRequirementsJson) {
+	public Response makeDiagnosis(String userRequirementsJson, @HeaderParam("preferredRequirements") String preferredRequirements) {
 		MonitoringStation monitoringStation = (new Gson()).fromJson(userRequirementsJson, MonitoringStation.class);
 		monitoringStation.populateIds();
 		
-		ClingoExecutor clingoExecutor = new ClingoExecutor(pathToClingo, pathToProgram, numOfResults);
-		ArrayList<String> diagnosis = clingoExecutor.createDiagnosis(monitoringStation);
+		ArrayList<String> preferredRequirementsList = createPreferredRequirementsList(preferredRequirements);
 		
-		System.out.println(diagnosis);
+		ClingoExecutor clingoExecutor = new ClingoExecutor(pathToClingo, pathToProgram, numOfResults);
+		ArrayList<String> diagnosis = clingoExecutor.createDiagnosis(monitoringStation, preferredRequirementsList);
 		
 		return Response.ok(translateToJavaScriptId(diagnosis).toString()).build();
 	}
@@ -178,5 +181,100 @@ public class DiagSvc {
 		diagnosisObject.add("diagnosisParts", diagnosisParts);
 		
 		return diagnosisObject;
+	}
+	
+	private ArrayList<String> createPreferredRequirementsList(String preferredRequirements) {
+		ArrayList<String> preferredRequirementsList = new ArrayList<String>();
+		
+		if (preferredRequirements != null) {
+			JsonElement jsonElement = new JsonParser().parse(preferredRequirements);
+			JsonArray jsonArray = jsonElement.getAsJsonArray();
+			for (JsonElement currentJsonElement : jsonArray) {
+				JsonObject jsonObject = currentJsonElement.getAsJsonObject();
+				String attribute = translateToCligoName(jsonObject.getAsJsonPrimitive("id").getAsString());
+				String value = jsonObject.getAsJsonPrimitive("value").getAsString();
+				preferredRequirementsList.add(attribute + ".*" + value + ".*");
+			}
+		}
+		
+		return preferredRequirementsList;
+	}
+	
+	private String translateToCligoName(String javaScriptId) {
+		if (javaScriptId.equals("communication")) {
+			return "attributevalue_type_monitoringstation_communication";
+		} else if (javaScriptId.equals("enclosure")) {
+			return "attributevalue_type_monitoringstation_enclosure";
+		} else if (javaScriptId.equals("localStorage")) {
+			return "attributevalue_type_monitoringstation_localstorage";
+		} else if (javaScriptId.equals("cloudStorage")) {
+			return "attributevalue_type_monitoringstation_cloudstorage";
+		} else if (javaScriptId.equals("select-deployment-environment-type")) {
+			return "attributevalue_type_deploymentenvironment_type";
+		} else if (javaScriptId.equals("select-deployment-environment-context")) {
+			return "attributevalue_type_deploymentenvironment_context";
+		} else if (javaScriptId.equals("select-deployment-environment-location-type")) {
+			return "attributevalue_type_deploymentenvironment_locationtype";
+		} else if (javaScriptId.equals("select-area-type")) {
+			return "attributevalue_type_area_type";
+		} else if (javaScriptId.equals("select-area-category")) {
+			return "attributevalue_type_area_category";
+		} else if (javaScriptId.equals("select-area-prefabricatedbuilding")) {
+			return "attributevalue_type_area_prefabricatedbuilding";
+		} else if (javaScriptId.equals("select-area-vehicletraffic")) {
+			return "attributevalue_type_area_vehicletraffic";
+		} else if (javaScriptId.equals("select-area-industrialtype")) {
+			return "attributevalue_type_area_industrialtype";
+		} else if (javaScriptId.equals("select-area-pollutedsoil")) {
+			return "attributevalue_type_area_pollutedsoil";
+		} else if (javaScriptId.equals("select-area-floor")) {
+			return "attributevalue_type_area_floor";
+		} else if (javaScriptId.equals("select-area-controlledarea")) {
+			return "attributevalue_type_area_controlledarea";
+		} else if (javaScriptId.equals("select-area-airconditioning")) {
+			return "attributevalue_type_area_airconditioning";
+		} else if (javaScriptId.equals("select-area-heatingsystem")) {
+			return "attributevalue_type_area_heatingsystem";
+		} else if (javaScriptId.equals("select-area-windows")) {
+			return "attributevalue_type_area_windows";
+		} else if (javaScriptId.equals("select-area-smokepresence")) {
+			return "attributevalue_type_area_smokepresence";
+		} else if (javaScriptId.equals("select-area-moldpresence")) {
+			return "attributevalue_type_area_moldpresence";
+		} else if (javaScriptId.equals("select-area-dustyarea")) {
+			return "attributevalue_type_area_dustyarea";
+		} else if (javaScriptId.equals("select-environmental-condition-humidity")) {
+			return "attributevalue_type_environmetalconditions_humidity";
+		} else if (javaScriptId.equals("select-environmental-condition-windspeed")) {
+			return "attributevalue_type_environmetalconditions_windspeed";
+		} else if (javaScriptId.equals("select-environmental-condition-rain")) {
+			return "attributevalue_type_environmetalconditions_rain";
+		} else if (javaScriptId.equals("select-environmental-condition-dust")) {
+			return "attributevalue_type_environmetalconditions_dust";
+		} else if (javaScriptId.equals("select-environmental-condition-averagetemperature")) {
+			return "attributevalue_type_environmetalconditions_averagetemperature";
+		} else if (javaScriptId.equals("select-environmental-condition-snow")) {
+			return "attributevalue_type_environmetalconditions_snow";
+		} else if (javaScriptId.equals("select-environmental-condition-ice")) {
+			return "attributevalue_type_environmetalconditions_ice";
+		} else if (javaScriptId.equals("select-environmental-condition-vibrations")) {
+			return "attributevalue_type_environmetalconditions_vibrations";
+		} else if (javaScriptId.equals("select-environmental-condition-averagepressure")) {
+			return "attributevalue_type_environmetalconditions_averagepressure";
+		} else if (javaScriptId.equals("select-wall-type-wallpaper")) {
+			return "attributevalue_type_walltype_wallpaper";
+		} else if (javaScriptId.equals("select-wall-type-plasticcladding")) {
+			return "attributevalue_type_walltype_plasticcladding";
+		} else if (javaScriptId.equals("select-wall-type-woodenpanels")) {
+			return "attributevalue_type_walltype_woodenpanels";
+		} else if (javaScriptId.equals("select-wall-type-moquette")) {
+			return "attributevalue_type_walltype_moquette";
+		} else if (javaScriptId.equals("select-wall-type-tiles")) {
+			return "attributevalue_type_walltype_tiles";
+		} else if (javaScriptId.equals("select-wall-type-plaster")) {
+			return "attributevalue_type_walltype_plaster";
+		} else {
+			return "";
+		}
 	}
 }

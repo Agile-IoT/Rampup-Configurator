@@ -205,7 +205,7 @@ Contributors:
 </div>
 
 <button type="button" class="btn btn-primary btn-block" id="button-get-configs">Get configurations</button>
-<button type="button" class="btn btn-primary btn-block" id="button-get-diag">Show feasible alternatives</button>
+<button type="button" class="btn btn-warning btn-block" id="button-get-diag">Show feasible alternatives (this can take some time)</button>
 
 <h1>Available Configurations</h1>
 <p>Here you can see a possible configuration according to your input.</p>
@@ -279,13 +279,13 @@ function clearDiagnosis() {
 var userRequirementsJson = '';
 
 $('body').on('click', '#button-add-room', function() {
-	$('#room-container').append('<div class="panel-group"><div class="panel panel-warning"><div class="panel-heading"><div class="row-fluid"><div class="span6 pull-left"><select class="form-control" id="select-room-type"><option value="kitchen">Kitchen</option><option value="bathroom">Bathroom</option><option value="livingroom">Livingroom</option><option value="bedroom">Bedroom</option><option value="corridor">Corridor</option><option value="other">Other</option></select></div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-remove-room"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Remove</button></div></div></div><div class="panel-body"><h3>Home Appliances</h3><div class="row-fluid"><div class="span6 pull-left"><p>Here you can add, remove and configure Home Appliances for your Smarthome</p></div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-add-homeappliance"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add</button></div></div><div id="homeappliance-container"></div></div></div></div>');
+	$('#room-container').append('<div class="panel-group"><div class="panel panel-warning"><div class="panel-heading"><div class="row-fluid"><div class="span6 pull-left"><select class="form-control select-room-type" id="select-room-type"><option value="kitchen">Kitchen</option><option value="bathroom">Bathroom</option><option value="livingroom">Livingroom</option><option value="bedroom">Bedroom</option><option value="corridor">Corridor</option><option value="other">Other</option></select></div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-remove-room"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Remove</button></div></div></div><div class="panel-body"><h3>Home Appliances</h3><div class="row-fluid"><div class="span6 pull-left"><p>Here you can add, remove and configure Home Appliances for your Smarthome</p></div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-add-homeappliance"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add</button></div></div><div id="homeappliance-container"></div></div></div></div>');
 }).on('click', '#button-remove-room', function() {
 	var divRoomContainer = $(this).parent().parent().parent().parent().parent();
 	divRoomContainer.remove();
 }).on('click', '#button-add-homeappliance', function() {
 	var divHomeApplianceContainer = $(this).parent().parent().parent().find('#homeappliance-container');
-	divHomeApplianceContainer.append('<div class="panel-group"><div class="panel panel-warning"><div class="panel-heading"><div class="row-fluid"><div class="span6 pull-left"><select class="form-control" id="select-homeappliance-type"><option value="oven">Oven</option><option value="stove">Stove</option><option value="microwave">Microwave</option><option value="dishwasher">Dishwasher</option><option value="fridge">Fridge</option><option value="radio">Radio</option><option value="freezer">Freezer</option><option value="tv">TV</option><option value="console">Console</option><option value="router">Router</option><option value="computer">Computer</option><option value="server">Server</option><option value="washingmachine">Washing Machine</option></select></div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-remove-homeappliance"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Remove</button></div></div></div><div class="panel-body"></div></div></div>');
+	divHomeApplianceContainer.append('<div class="panel-group"><div class="panel panel-warning"><div class="panel-heading"><div class="row-fluid"><div class="span6 pull-left"><select class="form-control select-homeappliance-type" id="select-homeappliance-type"><option value="oven">Oven</option><option value="stove">Stove</option><option value="microwave">Microwave</option><option value="dishwasher">Dishwasher</option><option value="fridge">Fridge</option><option value="radio">Radio</option><option value="freezer">Freezer</option><option value="tv">TV</option><option value="console">Console</option><option value="router">Router</option><option value="computer">Computer</option><option value="server">Server</option><option value="washingmachine">Washing Machine</option></select></div><div class="span6 text-right"><button type="button" class="btn btn-default btn-sm" id="button-remove-homeappliance"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Remove</button></div></div></div><div class="panel-body"></div></div></div>');
 }).on('click', '#button-remove-homeappliance', function() {
 	var divHomeApplianceContainer = $(this).parent().parent().parent().parent().parent();
 	divHomeApplianceContainer.remove();
@@ -386,6 +386,12 @@ $('body').on('click', '#button-add-room', function() {
 		alert('You have not added any rooms!');
 	}
 }).on('click', '#button-get-diag', function() {
+	var preferredRequirements = [];
+	$.each($.find('.btn-danger'), function(p, preferred) {
+		var preferredRequirement = {id: preferred.id, value: preferred.value};
+		preferredRequirements.push(preferredRequirement);
+	});
+	
 	if (userRequirementsJson != '') {
 		$.ajax({
 			url: '../rest/diagnosis/',
@@ -393,16 +399,22 @@ $('body').on('click', '#button-add-room', function() {
 			type: 'POST',
 			contentType: 'application/json; charset=utf-8',
 			data: userRequirementsJson,
+			headers: {'preferredRequirements': JSON.stringify(preferredRequirements)},
+			beforeSend: function() {
+				$('div#solutions').html('<img src="img/loading.gif" class="img-responsive center-block"></img>');
+			},
 			success: function(data) {
 				clearDiagnosis();
 				
 				$.each(data.diagnosisParts, function(dp, diagnosisPart) {
-					$(diagnosisPart).addClass('btn-danger');
+					var selector = diagnosisPart.split('POS')[0];
+					var position = diagnosisPart.split('POS')[1];
+					$(selector).eq(position).addClass('btn-danger');
 				});
+				$('div#solutions').html('<div class="alert alert-info"><strong>The setting(s) that should be changed in order to get a feasible alterative is/are marked above. If you don\'t like the suggestion, you can click the button again to see a different alternative.</strong></div>');
 			}
 		});
 	}
-	$('button#button-get-diag').hide();
 });
 
 </script>
