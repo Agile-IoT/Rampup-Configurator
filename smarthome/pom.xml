@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>at.tugraz.ist.ase</groupId>
   <artifactId>smarthome</artifactId>
-  <version>1.1</version>
+  <version>1.2</version>
   <name>Smart Home Configurator</name>
   
   <dependencies>
