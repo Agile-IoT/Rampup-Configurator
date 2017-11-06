@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     TUGraz - initial API and implementation
+ *     TUGraz - initial implementation
  ******************************************************************************/
 
 package at.tugraz.ist.ase.genconfgen;
