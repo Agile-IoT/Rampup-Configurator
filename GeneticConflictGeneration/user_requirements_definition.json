@@ -1,0 +1,341 @@
+{
+	"userRequirements": [
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_monitoringstation_communication(1,%s).",
+			"possibleValues": [
+				"wired",
+				"wireless"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_monitoringstation_localstorage(1,%s).",
+			"possibleValues": [
+				"yes",
+				"no"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_monitoringstation_cloudstorage(1,%s).",
+			"possibleValues": [
+				"yes",
+				"no"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_monitoringstation_enclosure(1,%s).",
+			"possibleValues": [
+				"strugged",
+				"standard"
+			]
+		},
+		{
+			"type": "static",
+			"constraint": "type_deploymentenvironment(2)."
+		},
+		{
+			"type": "static",
+			"constraint": "assoc_type_monitoringstation_and_type_deploymentenvironment(1,2)."
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_deploymentenvironment_type(2,%s).",
+			"possibleValues": [
+				"indoor",
+				"outdoor",
+				"mixed"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_deploymentenvironment_context(2,%s).",
+			"possibleValues": [
+				"seaside",
+				"country",
+				"tropicalarea",
+				"aridarea",
+				"other"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_deploymentenvironment_locationtype(2,%s).",
+			"possibleValues": [
+				"urban",
+				"suburban",
+				"countryside",
+				"residential",
+				"industrial",
+				"other"
+			]
+		},
+		{
+			"type": "static",
+			"constraint": "type_area(3)."
+		},
+		{
+			"type": "static",
+			"constraint": "assoc_type_deploymentenvironment_and_type_area(2,3)."
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_area_type(3,%s).",
+			"possibleValues": [
+				"indoor",
+				"outdoor",
+				"mixed"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_area_category(3,%s).",
+			"possibleValues": [
+				"industry",
+				"shop",
+				"gym",
+				"pub",
+				"library",
+				"hospital",
+				"residential",
+				"school",
+				"publicoffice",
+				"monument",
+				"road",
+				"countryfield",
+				"sensitivearea",
+				"childrenspace;",
+				"other"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_area_prefabricatedbuilding(3,%s).",
+			"possibleValues": [
+				"yes",
+				"no"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_area_vehicletraffic(3,%s).",
+			"possibleValues": [
+				"none",
+				"light",
+				"medium",
+				"heavy"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_area_industrialtype(3,%s).",
+			"possibleValues": [
+				"notapplicable",
+				"chemical",
+				"siderurgic",
+				"heavy",
+				"sme"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_area_pollutedsoil(3,%s).",
+			"possibleValues": [
+				"yes",
+				"no"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_area_floor(3,%s).",
+			"lowerBound": 0,
+			"upperBound": 1
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_area_controlledarea(3,%s).",
+			"possibleValues": [
+				"yes",
+				"no"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_area_airconditioning(3,%s).",
+			"possibleValues": [
+				"yes",
+				"no"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_area_heatingsystem(3,%s).",
+			"possibleValues": [
+				"yes",
+				"no"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_area_windows(3,%s).",
+			"possibleValues": [
+				"yes",
+				"no"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_area_smokepresence(3,%s).",
+			"possibleValues": [
+				"yes",
+				"no"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_area_moldpresence(3,%s).",
+			"possibleValues": [
+				"yes",
+				"no"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_area_dustyarea(3,%s).",
+			"possibleValues": [
+				"yes",
+				"no"
+			]
+		},
+		{
+			"type": "static",
+			"constraint": "type_environmetalconditions(1000)."
+		},
+		{
+			"type": "static",
+			"constraint": "assoc_type_area_and_type_environmetalconditions(3,1000)."
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_environmetalconditions_humidity(1000,%s).",
+			"lowerBound": 0,
+			"upperBound": 1
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_environmetalconditions_windspeed(1000,%s).",
+			"lowerBound": 0,
+			"upperBound": 1
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_environmetalconditions_rain(1000,%s).",
+			"possibleValues": [
+				"yes",
+				"no"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_environmetalconditions_dust(1000,%s).",
+			"possibleValues": [
+				"yes",
+				"no"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_environmetalconditions_averagetemperature(1000,%s).",
+			"lowerBound": 0,
+			"upperBound": 1
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_environmetalconditions_snow(1000,%s).",
+			"possibleValues": [
+				"yes",
+				"no"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_environmetalconditions_ice(1000,%s).",
+			"possibleValues": [
+				"yes",
+				"no"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_environmetalconditions_vibrations(1000,%s).",
+			"possibleValues": [
+				"yes",
+				"no"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_environmetalconditions_averagepressure(1000,%s).",
+			"lowerBound": 0,
+			"upperBound": 1
+		},
+		{
+			"type": "static",
+			"constraint": "type_walltype(2000)."
+		},
+		{
+			"type": "static",
+			"constraint": "assoc_type_area_and_type_walltype(3,2000)."
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_walltype_wallpaper(2000,%s).",
+			"possibleValues": [
+				"yes",
+				"no"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_walltype_plasticcladding(2000,%s).",
+			"possibleValues": [
+				"yes",
+				"no"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_walltype_woodenpanels(2000,%s).",
+			"possibleValues": [
+				"yes",
+				"no"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_walltype_moquette(2000,%s).",
+			"possibleValues": [
+				"yes",
+				"no"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_walltype_tiles(2000,%s).",
+			"possibleValues": [
+				"yes",
+				"no"
+			]
+		},
+		{
+			"type": "dynamic",
+			"constraint": "attributevalue_type_walltype_plaster(2000,%s).",
+			"possibleValues": [
+				"yes",
+				"no"
+			]
+		}
+	]
+}
