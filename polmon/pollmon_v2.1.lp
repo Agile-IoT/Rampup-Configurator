@@ -18,7 +18,7 @@ potentialinstance_deploymentenvironment(2..number_deploymentenvironments+1).
 0{type_deploymentenvironment(X)}1 :- potentialinstance_deploymentenvironment(X).
 
 
-% 1 deployment environment has many areas: max 1 
+% 1 deployment environment has many areas: max 1
 % TODO: (Chris) update value of max_areas based on the user requirements
 #const max_areas = 1.
 #const number_areas = number_deploymentenvironments * max_areas.
@@ -41,7 +41,7 @@ potentialinstance_environmetalconditions(s1..s1+number_environmetalconditions-1)
 #const max_walltype = 1.
 #const number_walltypes = number_areas * max_walltype.
 #const s3 = 2000.
-potentialinstance_walltype(s3..s3+number_walltypes-1). 
+potentialinstance_walltype(s3..s3+number_walltypes-1).
 0{type_walltype(X)}1 :- potentialinstance_walltype(X).
 
 % 1 deployment environment has many pollutants : max 10
@@ -57,7 +57,7 @@ potentialinstance_pollutant(s4..s4+number_pollutant-1).
 #const max_infpollutant = 5.
 #const number_infpollutant = number_pollutant*max_infpollutant.
 #const s5 = 4000.
-potentialinstance_interferingpollutant(s5..s5+number_infpollutant-1). 
+potentialinstance_interferingpollutant(s5..s5+number_infpollutant-1).
 0{type_interferingpollutant(X)}1 :- potentialinstance_interferingpollutant(X).
 
 
@@ -66,7 +66,7 @@ potentialinstance_interferingpollutant(s5..s5+number_infpollutant-1).
 #const max_sensor = 5.
 #const number_sensor = max_sensor*number_pollutant.
 #const s6 = 5000.
-potentialinstance_sensor(s6..s6+number_sensor-1). 
+potentialinstance_sensor(s6..s6+number_sensor-1).
 0{type_sensor(X)}1 :- potentialinstance_sensor(X).
 
 % 1 Sensor uses many reference models : max 1
@@ -78,14 +78,14 @@ potentialinstance_referencemodel(s7..s7+number_refmodels-1).
 0{type_referencemodel(X)}1 :- potentialinstance_referencemodel(X).
 
 % 1 Sensor adopts 1 monitoring policy
-#const max_monpolicy = 1. 
+#const max_monpolicy = 1.
 #const number_monpolicy = number_sensor*max_monpolicy.
 #const s8 = 7000.
 potentialinstance_monitoringpolicy(s8..s8+number_monpolicy-1).
 0{type_monitoringpolicy(X)}1 :- potentialinstance_monitoringpolicy(X).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% VARIABLES 
+% VARIABLES
 % TODO: (Chris) update value of all variables in this section if they are changed (show the default value on UI in an editable text box)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #const max_floor = 5.
@@ -306,7 +306,7 @@ attributedomain_type_sensor_minoppressure(0;1).
 attributedomain_type_sensor_maxoppressure(0;1).
 attributedomain_type_sensor_upperlimit(-1;0;1;2;5;10;20;50;100;200;250;1000;2000;5000).
 attributedomain_type_sensor_dualsensor(yes;no).
-attributedomain_type_sensor_noise(-1;0;1;2;3;5;10;15;20;25;30;50;80;100;150;200;400;500;1200;1500;20000;30000).  
+attributedomain_type_sensor_noise(-1;0;1;2;3;5;10;15;20;25;30;50;80;100;150;200;400;500;1200;1500;20000;30000).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % WARNING: Sensor.noise= realvalue x 100   %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -365,10 +365,10 @@ attributedomain_type_monitoringpolicy_publishrate(0;1).
 %%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% ASSOCIATIONS 
+% ASSOCIATIONS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% ASSOC1: monitoringstation - deploymentenvironment 
+% ASSOC1: monitoringstation - deploymentenvironment
 1{assoc_type_monitoringstation_and_type_deploymentenvironment(X,Y): type_deploymentenvironment(Y)} max_deploymentenvironments :- type_monitoringstation(X).
 1{assoc_type_monitoringstation_and_type_deploymentenvironment(Y,X): type_monitoringstation(Y)} 1 :- type_deploymentenvironment(X).
 
@@ -393,7 +393,7 @@ attributedomain_type_monitoringpolicy_publishrate(0;1).
 1{assoc_type_pollutant_and_type_interferingpollutant(Y,X): type_pollutant(Y)} 1 :- type_interferingpollutant(X).
 
 
-% ASSOC8: type_sensor - type_monitoringpolicy 
+% ASSOC8: type_sensor - type_monitoringpolicy
 1{assoc_type_sensor_and_type_monitoringpolicy(X,Y): type_monitoringpolicy(Y)} max_monpolicy :- type_sensor(X).
 1{assoc_type_sensor_and_type_monitoringpolicy(Y,X): type_sensor(Y)} 1 :- type_monitoringpolicy(X).
 
@@ -405,6 +405,7 @@ attributedomain_type_monitoringpolicy_publishrate(0;1).
 1{assoc_type_pollutant_and_type_sensor(X,Y): type_sensor(Y)} max_sensor :- type_pollutant(X).
 1{assoc_type_pollutant_and_type_sensor(Y,X): type_pollutant(Y)} 1 :- type_sensor(X).
 
+% PARSER_UserRequirements
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % RULES
@@ -412,10 +413,10 @@ attributedomain_type_monitoringpolicy_publishrate(0;1).
 % Additional Rules From UML Diagram
 
 % R1: Each sensor should have 1 monitoring policy
-1{type_monitoringpolicy(M) : assoc_type_sensor_and_type_monitoringpolicy(S, M)}1 :- type_sensor(S). 
+1{type_monitoringpolicy(M) : assoc_type_sensor_and_type_monitoringpolicy(S, M)}1 :- type_sensor(S).
 
 % R2: Each area has 1 environmental condition -> SHOULD BE TAKEN FROM UI
-% 1{type_environmetalconditions(E) : assoc_type_area_and_type_environmetalconditions(A, E)}1 :- type_area(A). 
+% 1{type_environmetalconditions(E) : assoc_type_area_and_type_environmetalconditions(A, E)}1 :- type_area(A).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % CONSTRAINTS
@@ -451,26 +452,26 @@ attributedomain_type_monitoringpolicy_publishrate(0;1).
 % ----->  VALIDATED
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NEW_CONSTRAINT_TYPE: C4
-% if (x or y)  then has (z and w) 
+% if (x or y)  then has (z and w)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, co), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_type(A,outdoor), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_type(A,outdoor), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, co2), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_type(A,outdoor), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_type(A,outdoor), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, cov), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_type(A,outdoor), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_type(A,outdoor), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, no), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_type(A,outdoor), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_type(A,outdoor), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, no2), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_type(A,outdoor), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_type(A,outdoor), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, o3), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_type(A,outdoor), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_type(A,outdoor), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 % validate C4
 % type_deploymentenvironment(2).
@@ -489,16 +490,16 @@ attributedomain_type_monitoringpolicy_publishrate(0;1).
 
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, co), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_type(A,indoor), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_type(A,indoor), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, co2), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_type(A,indoor), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_type(A,indoor), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, cov), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_type(A,indoor), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_type(A,indoor), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, ch2o), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_type(A,indoor), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_type(A,indoor), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 % C6: IF Area.Category="Road" THEN DeploymentEnvironment HAS
 %    Pollutant.type="CO" AND
@@ -507,13 +508,13 @@ attributedomain_type_monitoringpolicy_publishrate(0;1).
 % -----> SAME WITH VALIDATED (C4)
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, co), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_category(A,road), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_category(A,road), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, pm10), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_category(A,road), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_category(A,road), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, no2), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_category(A,road), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_category(A,road), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 
 % C7: IF Area.Category="Industry" THEN DeploymentEnvironment HAS
@@ -522,10 +523,10 @@ attributedomain_type_monitoringpolicy_publishrate(0;1).
 % -----> SAME WITH VALIDATED (C4)
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, so2), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_category(A,industry), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_category(A,industry), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, h2s), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_category(A,industry), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_category(A,industry), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 
 % C8: IF Area.Category="Childreanspace" OR Area.Category="Shop" OR
@@ -537,56 +538,56 @@ attributedomain_type_monitoringpolicy_publishrate(0;1).
 % -----> SAME WITH VALIDATED (C4)
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, co), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_category(A,childrenspace), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_category(A,childrenspace), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, co2), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_category(A,childrenspace), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_category(A,childrenspace), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, ch2o), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_category(A,childrenspace), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_category(A,childrenspace), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, co), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_category(A,shop), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_category(A,shop), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, co2), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_category(A,shop), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_category(A,shop), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, ch2o), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_category(A,shop), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_category(A,shop), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, co), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_category(A,gym), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_category(A,gym), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, co2), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_category(A,gym), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_category(A,gym), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, ch2o), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_category(A,gym), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_category(A,gym), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, co), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_category(A,library), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_category(A,library), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, co2), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_category(A,library), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_category(A,library), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, ch2o), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_category(A,library), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_category(A,library), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, co), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_category(A,school), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_category(A,school), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, co2), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_category(A,school), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_category(A,school), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, ch2o), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_category(A,school), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_category(A,school), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 
 % C9: IF Area.Category="Monument" THEN DeploymentEnvironment HAS
 %  Pollutant.type="SO2"
 % -----> SAME WITH VALIDATED (C4)
 1{type_pollutant(P) : attributevalue_type_pollutant_type(P, so2), assoc_type_deploymentenvironment_and_type_pollutant(E,P)}1
-:- attributevalue_type_area_category(A,monument), assoc_type_deploymentenvironment_and_type_area(E,A). 
+:- attributevalue_type_area_category(A,monument), assoc_type_deploymentenvironment_and_type_area(E,A).
 
 % C10: IF Pollutant.type=""CO"" OR
 %  Pollutant.type=""CO2"" OR
@@ -615,7 +616,7 @@ attributedomain_type_monitoringpolicy_publishrate(0;1).
 % -----> VALIDATED
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NEW_CONSTRAINT_TYPE: C10
-% if (x or y)   then (z)        
+% if (x or y)   then (z)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 :- attributevalue_type_pollutant_type(P,co), not attributevalue_type_pollutant_affectair(P,yes).
@@ -653,10 +654,10 @@ attributedomain_type_monitoringpolicy_publishrate(0;1).
 %  DeploymentEnvironment HAS Pollutant.type="NO"
 % -----> SAME WITH VALIDATED (C4)
 1{type_interferingpollutant(I) : attributevalue_type_interferingpollutant_type(I, no2), assoc_type_pollutant_and_type_interferingpollutant(P1,I)}1
-:- assoc_type_deploymentenvironment_and_type_area(E,A),assoc_type_deploymentenvironment_and_type_pollutant(E,P1),attributevalue_type_pollutant_type(P1, o3). 
+:- assoc_type_deploymentenvironment_and_type_area(E,A),assoc_type_deploymentenvironment_and_type_pollutant(E,P1),attributevalue_type_pollutant_type(P1, o3).
 
 1{type_interferingpollutant(I) : attributevalue_type_interferingpollutant_type(I, no), assoc_type_pollutant_and_type_interferingpollutant(P1,I)}1
-:- assoc_type_deploymentenvironment_and_type_area(E,A),assoc_type_deploymentenvironment_and_type_pollutant(E,P1),attributevalue_type_pollutant_type(P1, o3). 
+:- assoc_type_deploymentenvironment_and_type_area(E,A),assoc_type_deploymentenvironment_and_type_pollutant(E,P1),attributevalue_type_pollutant_type(P1, o3).
 
 
 % C12: IF DeploymentEnvironment HAS Pollutant.type="NO2" THEN
@@ -664,10 +665,10 @@ attributedomain_type_monitoringpolicy_publishrate(0;1).
 %  DeploymentEnvironment HAS Pollutant.type="NO"
 % -----> SAME WITH VALIDATED (C4)
 1{type_interferingpollutant(I) : attributevalue_type_interferingpollutant_type(I, o3), assoc_type_pollutant_and_type_interferingpollutant(P1,I)}1
-:- assoc_type_deploymentenvironment_and_type_area(E,A),assoc_type_deploymentenvironment_and_type_pollutant(E,P1),attributevalue_type_pollutant_type(P1, no2). 
+:- assoc_type_deploymentenvironment_and_type_area(E,A),assoc_type_deploymentenvironment_and_type_pollutant(E,P1),attributevalue_type_pollutant_type(P1, no2).
 
 1{type_interferingpollutant(I) : attributevalue_type_interferingpollutant_type(I, no), assoc_type_pollutant_and_type_interferingpollutant(P1,I)}1
-:- assoc_type_deploymentenvironment_and_type_area(E,A),assoc_type_deploymentenvironment_and_type_pollutant(E,P1),attributevalue_type_pollutant_type(P1, no2). 
+:- assoc_type_deploymentenvironment_and_type_area(E,A),assoc_type_deploymentenvironment_and_type_pollutant(E,P1),attributevalue_type_pollutant_type(P1, no2).
 
 
 % C13: IF DeploymentEnvironment HAS Pollutant.type="NO" THEN
@@ -675,19 +676,19 @@ attributedomain_type_monitoringpolicy_publishrate(0;1).
 %  DeploymentEnvironment HAS Pollutant.type="NO2"
 % -----> SAME WITH VALIDATED (C4)
 1{type_interferingpollutant(I) : attributevalue_type_interferingpollutant_type(I, no2), assoc_type_pollutant_and_type_interferingpollutant(P1,I)}1
-:- assoc_type_deploymentenvironment_and_type_area(E,A),assoc_type_deploymentenvironment_and_type_pollutant(E,P1),attributevalue_type_pollutant_type(P1, no). 
+:- assoc_type_deploymentenvironment_and_type_area(E,A),assoc_type_deploymentenvironment_and_type_pollutant(E,P1),attributevalue_type_pollutant_type(P1, no).
 
 1{type_interferingpollutant(I) : attributevalue_type_interferingpollutant_type(I, o3), assoc_type_pollutant_and_type_interferingpollutant(P1,I)}1
-:- assoc_type_deploymentenvironment_and_type_area(E,A),assoc_type_deploymentenvironment_and_type_pollutant(E,P1),attributevalue_type_pollutant_type(P1, no). 
+:- assoc_type_deploymentenvironment_and_type_area(E,A),assoc_type_deploymentenvironment_and_type_pollutant(E,P1),attributevalue_type_pollutant_type(P1, no).
 
 
 % C14: IF Pollutant.type"CO" THEN Sensor.technology="Electrochemical"
 % -----> VALIDATED
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NEW_CONSTRAINT_TYPE: C14
-% if (x)   then (y)             
+% if (x)   then (y)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-:- attributevalue_type_pollutant_type(P,co), 
+:- attributevalue_type_pollutant_type(P,co),
 assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_technology(S,electrochemical).
 
@@ -702,12 +703,12 @@ not attributevalue_type_sensor_technology(S,electrochemical).
 % C15: IF Pollutant.type"CO2" THEN Sensor.technology="Infrared" OR
 %  Sensor.technology="InfraredThermop" OR
 %  Sensor.technology="InfraredPyro"
-% -----> VALIDATED 
+% -----> VALIDATED
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NEW_CONSTRAINT_TYPE: C15
-% if (x)   then (y or z)        
+% if (x)   then (y or z)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-:- attributevalue_type_pollutant_type(P,co2),  
+:- attributevalue_type_pollutant_type(P,co2),
 assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_technology(S,infrared),
 not attributevalue_type_sensor_technology(S,infraredthermop),
@@ -721,20 +722,20 @@ not attributevalue_type_sensor_technology(S,photoionisation).
 
 % C17: IF Pollutant.type"NO2" THEN Sensor.technology="Electrochemical"
 % -----> SAME WITH VALIDATED (C14)
-:- attributevalue_type_pollutant_type(P,no2), 
+:- attributevalue_type_pollutant_type(P,no2),
 assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_technology(S,electrochemical).
 
 % C18: IF Pollutant.type"O3" THEN Sensor.technology="Electrochemical"
 % -----> SAME WITH VALIDATED (C14)
-:- attributevalue_type_pollutant_type(P,o3), 
+:- attributevalue_type_pollutant_type(P,o3),
  assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_technology(S,electrochemical).
 
 
 % C19: IF Pollutant.type"NO" THEN Sensor.technology="Electrochemical"
 % -----> SAME WITH VALIDATED (C14)
-:- attributevalue_type_pollutant_type(P,no), 
+:- attributevalue_type_pollutant_type(P,no),
  assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_technology(S,electrochemical).
 
@@ -748,7 +749,7 @@ not attributevalue_type_sensor_technology(S,electrochemical).
 
 % C21: IF Pollutant.type"PH3" THEN Sensor.technology="Electrochemical"
 % -----> SAME WITH VALIDATED (C14)
-:- attributevalue_type_pollutant_type(P,ph3), 
+:- attributevalue_type_pollutant_type(P,ph3),
  assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_technology(S,electrochemical).
 
@@ -756,27 +757,27 @@ not attributevalue_type_sensor_technology(S,electrochemical).
 % C22: IF Pollutant.type"ETO" THEN Sensor.technology="Electrochemical"
 % -----> SAME WITH VALIDATED (C14)
 :- attributevalue_type_pollutant_type(P,ph3),
- assoc_type_pollutant_and_type_sensor(P,S), 
+ assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_technology(S,electrochemical).
 
 
 % C23: IF Pollutant.type"CH2O" THEN Sensor.technology="Electrochemical"
 % -----> SAME WITH VALIDATED (C14)
-:- attributevalue_type_pollutant_type(P,ch20), 
+:- attributevalue_type_pollutant_type(P,ch20),
  assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_technology(S,electrochemical).
 
 
 % C24: IF Pollutant.type"SO2" THEN Sensor.technology="Electrochemical"
 % -----> SAME WITH VALIDATED (C14)
-:- attributevalue_type_pollutant_type(P,so2), 
+:- attributevalue_type_pollutant_type(P,so2),
  assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_technology(S,electrochemical).
 
 
 % C25: IF Pollutant.type"H2" THEN Sensor.technology="Electrochemical"
 % -----> SAME WITH VALIDATED (C14)
-:- attributevalue_type_pollutant_type(P,h2), 
+:- attributevalue_type_pollutant_type(P,h2),
  assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_technology(S,electrochemical).
 
@@ -788,37 +789,37 @@ not attributevalue_type_sensor_technology(S,electrochemical).
 
 % C27: IF Pollutant.type"HCL" THEN Sensor.technology="Electrochemical"
 % -----> SAME WITH VALIDATED (C14)
-:- attributevalue_type_pollutant_type(P,hcl), 
+:- attributevalue_type_pollutant_type(P,hcl),
  assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_technology(S,electrochemical).
 
 % C28: IF Pollutant.type"HCN" THEN Sensor.technology="Electrochemical"
 % -----> SAME WITH VALIDATED (C14)
-:- attributevalue_type_pollutant_type(P,hcn), 
+:- attributevalue_type_pollutant_type(P,hcn),
  assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_technology(S,electrochemical).
 
 % C29: IF Pollutant.type"PM10" THEN Sensor.technology="Infrared"
 % -----> SAME WITH VALIDATED (C14)
-:- attributevalue_type_pollutant_type(P,pm10), 
+:- attributevalue_type_pollutant_type(P,pm10),
  assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_technology(S,infrared).
 
 % C30: IF Pollutant.type"PM2.5" THEN Sensor.technology="Infrared"
 % -----> SAME WITH VALIDATED (C14)
-:- attributevalue_type_pollutant_type(P,pm25), 
+:- attributevalue_type_pollutant_type(P,pm25),
  assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_technology(S,infrared).
 
 % C31: IF Pollutant.type"PM1" THEN Sensor.technology="Infrared"
 % -----> SAME WITH VALIDATED (C14)
-:- attributevalue_type_pollutant_type(P,pm1), 
+:- attributevalue_type_pollutant_type(P,pm1),
  assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_technology(S,infrared).
 
 % C32: IF Pollutant.type"PM0" THEN Sensor.technology="Infrared"
 % -----> SAME WITH VALIDATED (C14)
-:- attributevalue_type_pollutant_type(P,pm0), 
+:- attributevalue_type_pollutant_type(P,pm0),
  assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_technology(S,infrared).
 
@@ -830,20 +831,20 @@ not attributevalue_type_sensor_technology(S,geiger).
 
 % C34: IF Pollutant.type"B" THEN Sensor.technology="Geiger"
 % -----> SAME WITH VALIDATED (C14)
-:- attributevalue_type_pollutant_type(P,b), 
+:- attributevalue_type_pollutant_type(P,b),
  assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_technology(S,geiger).
 
 % C35: IF Pollutant.type"G" THEN Sensor.technology="Geiger"
 % -----> SAME WITH VALIDATED (C14)
-:- attributevalue_type_pollutant_type(P,g), 
+:- attributevalue_type_pollutant_type(P,g),
  assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_technology(S,geiger).
 
 
 % C36: IF Pollutant.type"CH4" THEN Sensor.technology="Infrared" OR Sensor.technology="InfraredThermop"
 % -----> SAME WITH VALIDATED (C15)
-:- attributevalue_type_pollutant_type(P,ch4),  
+:- attributevalue_type_pollutant_type(P,ch4),
 assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_technology(S,infrared),
 not attributevalue_type_sensor_technology(S,infraredthermop).
@@ -851,21 +852,21 @@ not attributevalue_type_sensor_technology(S,infraredthermop).
 % C37: IF Pollutant.type"CH2O" THEN Pollutant HAS InterferringPollutant.type="CO"
 % -----> SAME WITH VALIDATED (C4)
 1{type_interferingpollutant(I) : attributevalue_type_interferingpollutant_type(I, co), assoc_type_pollutant_and_type_interferingpollutant(P,I)}1
-:- attributevalue_type_pollutant_type(P,ch2o). 
+:- attributevalue_type_pollutant_type(P,ch2o).
 
 % C38: IF Pollutant.type"CH2O" THEN Pollutant HAS InterferringPollutant.type="H2"
 % -----> SAME WITH VALIDATED (C4)
 1{type_interferingpollutant(I) : attributevalue_type_interferingpollutant_type(I, h2), assoc_type_pollutant_and_type_interferingpollutant(P,I)}1
-:- attributevalue_type_pollutant_type(P,ch2o). 
+:- attributevalue_type_pollutant_type(P,ch2o).
 
 % C39: IF DeploymentEnvironment HAS Pollutant.type="CH2O" THEN DeploymentEnvironment HAS Pollutant.type="CO"
 % -----> SAME WITH VALIDATED (C4)
 1{type_interferingpollutant(I) : attributevalue_type_interferingpollutant_type(I, co), assoc_type_pollutant_and_type_interferingpollutant(P1,I)}1
-:- assoc_type_deploymentenvironment_and_type_pollutant(E,P1),attributevalue_type_pollutant_type(P1, ch2o). 
+:- assoc_type_deploymentenvironment_and_type_pollutant(E,P1),attributevalue_type_pollutant_type(P1, ch2o).
 
 % C40: IF Pollutant.type"COV" THEN Sensor.pod="1"
 % -----> SAME WITH VALIDATED (C14)
-:- attributevalue_type_pollutant_type(P,cov), 
+:- attributevalue_type_pollutant_type(P,cov),
  assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_pod(S,1).
 
@@ -938,38 +939,38 @@ not attributevalue_type_sensor_pod(S,4).
 % Pollutant.type="NO2" OR
 % Pollutant.type="SO2" THEN Sensor.pod="2" OR Sensor.pod="5"
 % -----> SAME WITH VALIDATED (C15)
-:- attributevalue_type_pollutant_type(P,co),  
+:- attributevalue_type_pollutant_type(P,co),
 assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_pod(S,2),
 not attributevalue_type_sensor_pod(S,5).
 
 
-:- attributevalue_type_pollutant_type(P,cl2),  
+:- attributevalue_type_pollutant_type(P,cl2),
 assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_pod(S,2),
 not attributevalue_type_sensor_pod(S,5).
 
-:- attributevalue_type_pollutant_type(P,hcn),  
+:- attributevalue_type_pollutant_type(P,hcn),
 assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_pod(S,2),
 not attributevalue_type_sensor_pod(S,5).
 
-:- attributevalue_type_pollutant_type(P,h2s),  
+:- attributevalue_type_pollutant_type(P,h2s),
 assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_pod(S,2),
 not attributevalue_type_sensor_pod(S,5).
 
-:- attributevalue_type_pollutant_type(P,no),  
+:- attributevalue_type_pollutant_type(P,no),
 assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_pod(S,2),
 not attributevalue_type_sensor_pod(S,5).
 
-:- attributevalue_type_pollutant_type(P,no2),  
+:- attributevalue_type_pollutant_type(P,no2),
 assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_pod(S,2),
 not attributevalue_type_sensor_pod(S,5).
 
-:- attributevalue_type_pollutant_type(P,so2),  
+:- attributevalue_type_pollutant_type(P,so2),
 assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_pod(S,2),
 not attributevalue_type_sensor_pod(S,5).
@@ -990,18 +991,18 @@ not attributevalue_type_sensor_pod(S,6).
 %                 Sensor.noise="5" AND
 %                 Sensor.upperlimit="50"
 % -----> SAME WITH VALIDATED (C4)
-1{type_sensor(S) : attributevalue_type_sensor_type(S,cov), 
-attributevalue_type_sensor_pod(S,1), 
+1{type_sensor(S) : attributevalue_type_sensor_type(S,cov),
+attributevalue_type_sensor_pod(S,1),
 attributevalue_type_sensor_noise(S,500),
 attributevalue_type_sensor_upperlimit(S,50)}1
-:- attributevalue_type_pollutant_type(P,cov). 
+:- attributevalue_type_pollutant_type(P,cov).
 
 
 % C47: IF DeploymentEnvironment HAS Pollutant.type="CO" THEN
 %  Pollutant HAS Sensor.type="CO"
 % -----> SAME WITH VALIDATED (C4)
 1{type_sensor(S) : attributevalue_type_sensor_type(S, co), assoc_type_pollutant_and_type_sensor(P,S)}1
-:- attributevalue_type_pollutant_type(P,co). 
+:- attributevalue_type_pollutant_type(P,co).
 
 % C48: IF Sensor.type="CO" AND Sensor.pod="2" THEN
 %  (Sensor.noise="4" AND Sensor.upperlimit="1000") OR
@@ -1013,7 +1014,7 @@ sensor_noise400_and_upperlimit1000(S) :- attributevalue_type_sensor_noise(S,400)
 sensor_noise50_and_upperlimit5000(S) :- attributevalue_type_sensor_noise(S,50), attributevalue_type_sensor_upperlimit(S,5000).
 sensor_noise5_and_upperlimit2000(S) :- attributevalue_type_sensor_noise(S,5), attributevalue_type_sensor_upperlimit(S,2000).
 
-:- attributevalue_type_sensor_type(S,co),  
+:- attributevalue_type_sensor_type(S,co),
  attributevalue_type_sensor_pod(S,2),
 not sensor_noise400_and_upperlimit1000(S),
 not sensor_noise50_and_upperlimit5000(S),
@@ -1023,13 +1024,13 @@ not sensor_noise5_and_upperlimit2000(S).
 %  (Sensor.noise="1,5" AND Sensor.upperlimit="1000")
 % -----> SAME WITH VALIDATED (C54)
 
-:- attributevalue_type_sensor_type(S,co), 
-attributevalue_type_sensor_pod(S,5), 
+:- attributevalue_type_sensor_type(S,co),
+attributevalue_type_sensor_pod(S,5),
 attributevalue_type_sensor_dualsensor(S,no),
 not attributevalue_type_sensor_noise(S,150).
 
-:- attributevalue_type_sensor_type(S,co), 
-attributevalue_type_sensor_pod(S,5), 
+:- attributevalue_type_sensor_type(S,co),
+attributevalue_type_sensor_pod(S,5),
 attributevalue_type_sensor_dualsensor(S,no),
 not attributevalue_type_sensor_upperlimit(S,1000).
 
@@ -1037,16 +1038,16 @@ not attributevalue_type_sensor_upperlimit(S,1000).
 %  Pollutant HAS Sensor.type="O3"
 % -----> SAME WITH VALIDATED (C4)
 1{type_sensor(S) : attributevalue_type_sensor_type(S, o3), assoc_type_pollutant_and_type_sensor(P,S)}1
-:- attributevalue_type_pollutant_type(P,o3). 
+:- attributevalue_type_pollutant_type(P,o3).
 
 % C51: "IF Sensor.type=""O3"" AND Sensor.dualsensor=""false"" THEN
 %  (Sensor.noise=""4"" AND Sensor.upperlimit=""5"")"
 % -----> SAME WITH VALIDATED (C54)
-:- attributevalue_type_sensor_type(S,o3), 
+:- attributevalue_type_sensor_type(S,o3),
 attributevalue_type_sensor_dualsensor(S,no),
 not attributevalue_type_sensor_noise(S,400).
 
-:- attributevalue_type_sensor_type(S,o3), 
+:- attributevalue_type_sensor_type(S,o3),
 attributevalue_type_sensor_dualsensor(S,no),
 not attributevalue_type_sensor_upperlimit(S,5).
 
@@ -1054,7 +1055,7 @@ not attributevalue_type_sensor_upperlimit(S,5).
 %  Pollutant HAS Sensor.type=""NO2"""
 % -----> SAME WITH VALIDATED (C4)
 1{type_sensor(S) : attributevalue_type_sensor_type(S, no2), assoc_type_pollutant_and_type_sensor(P,S)}1
-:- attributevalue_type_pollutant_type(P,no2). 
+:- attributevalue_type_pollutant_type(P,no2).
 
 
 % C53: IF Sensor.type="NO2" AND Sensor.pod="2" AND Sensor.dualsensor="false" THEN
@@ -1065,7 +1066,7 @@ not attributevalue_type_sensor_upperlimit(S,5).
 sensor_noise1200_and_upperlimit20(S) :- attributevalue_type_sensor_noise(S,1200), attributevalue_type_sensor_upperlimit(S,20).
 sensor_noise2_and_upperlimit20(S) :- attributevalue_type_sensor_noise(S,2), attributevalue_type_sensor_upperlimit(S,20).
 
-:- attributevalue_type_sensor_type(S,no2),  
+:- attributevalue_type_sensor_type(S,no2),
  attributevalue_type_sensor_pod(S,2),
   attributevalue_type_sensor_dualsensor(S,no),
 not sensor_noise1200_and_upperlimit20(S),
@@ -1077,7 +1078,7 @@ not sensor_noise2_and_upperlimit20(S).
 % -----> VALIDATED
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NEW_CONSTRAINT_TYPE: C54
-% if (x)   then (y and z)       
+% if (x)   then (y and z)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 :- attributevalue_type_sensor_pod(S,5), attributedomain_type_sensor_type(S,no2),
 not attributevalue_type_sensor_upperlimit(S,20).
@@ -1115,7 +1116,7 @@ not attributevalue_type_sensor_dualsensor(S,yes).
 %  Polutant HAS Sensor.type=""H2S"""
 % -----> SAME WITH VALIDATED (C4)
 1{type_sensor(S) : attributevalue_type_sensor_type(S, h2s), assoc_type_pollutant_and_type_sensor(P,S)}1
-:- attributevalue_type_pollutant_type(P,h2s), type_pollutant(P). 
+:- attributevalue_type_pollutant_type(P,h2s), type_pollutant(P).
 
 
 % C57: "IF Sensor.type=""H2S"" AND Sensor.pod=""2"" THEN
@@ -1130,7 +1131,7 @@ sensor_noise5_and_upperlimit200(S) :- attributevalue_type_sensor_noise(S,5), att
 sensor_noise50_and_upperlimit2000(S) :- attributevalue_type_sensor_noise(S,50), attributevalue_type_sensor_upperlimit(S,2000).
 sensor_noise2_and_upperlimit50(S) :- attributevalue_type_sensor_noise(S,2), attributevalue_type_sensor_upperlimit(S,50).
 
-:- attributevalue_type_sensor_type(S,h2s),  
+:- attributevalue_type_sensor_type(S,h2s),
  attributevalue_type_sensor_pod(S,2),
 not sensor_noise100_and_upperlimit100(S),
 not sensor_noise5_and_upperlimit200(S),
@@ -1142,12 +1143,12 @@ not sensor_noise2_and_upperlimit50(S).
 %  (Sensor.noise=""0,2"" AND Sensor.upperlimit=""100"")"
 % -----> SAME WITH VALIDATED (C54)
 
-:- attributevalue_type_sensor_type(S,h2s), 
+:- attributevalue_type_sensor_type(S,h2s),
 attributevalue_type_sensor_pod(S,5),
 attributevalue_type_sensor_dualsensor(S,no),
 not attributevalue_type_sensor_upperlimit(S,100).
 
-:- attributevalue_type_sensor_type(S,h2s), 
+:- attributevalue_type_sensor_type(S,h2s),
 attributevalue_type_sensor_pod(S,5),
 attributevalue_type_sensor_dualsensor(S,no),
 not attributevalue_type_sensor_noise(S,20).
@@ -1157,55 +1158,55 @@ not attributevalue_type_sensor_noise(S,20).
 %  DeploymentEnvironment HAS Pollutant.type=""H2S"" THEN
 %  Sensor.noise=""0,25"" AND Sensor.upperlimit=""100"" AND Sensor.dualsensor=""true"""
 % -----> SAME WITH VALIDATED (C54)
-:- attributevalue_type_pollutant_type(P1,co),  
-attributevalue_type_pollutant_type(P2,h2s), 
+:- attributevalue_type_pollutant_type(P1,co),
+attributevalue_type_pollutant_type(P2,h2s),
 assoc_type_deploymentenvironment_and_type_pollutant(E,P1),
 assoc_type_deploymentenvironment_and_type_pollutant(E,P2),
-assoc_type_pollutant_and_type_sensor(P1,S1), 
+assoc_type_pollutant_and_type_sensor(P1,S1),
 not attributevalue_type_sensor_noise(S1,25).
 
-:- attributevalue_type_pollutant_type(P1,co),  
-attributevalue_type_pollutant_type(P2,h2s), 
+:- attributevalue_type_pollutant_type(P1,co),
+attributevalue_type_pollutant_type(P2,h2s),
 assoc_type_deploymentenvironment_and_type_pollutant(E,P1),
 assoc_type_deploymentenvironment_and_type_pollutant(E,P2),
-assoc_type_pollutant_and_type_sensor(P2,S2), 
+assoc_type_pollutant_and_type_sensor(P2,S2),
 not attributevalue_type_sensor_noise(S2,25).
 
 
-:- attributevalue_type_pollutant_type(P1,co),  
-attributevalue_type_pollutant_type(P2,h2s), 
+:- attributevalue_type_pollutant_type(P1,co),
+attributevalue_type_pollutant_type(P2,h2s),
 assoc_type_deploymentenvironment_and_type_pollutant(E,P1),
 assoc_type_deploymentenvironment_and_type_pollutant(E,P2),
 assoc_type_pollutant_and_type_sensor(P1,S1),
 not attributevalue_type_sensor_upperlimit(S1,100).
 
-:- attributevalue_type_pollutant_type(P1,co),  
-attributevalue_type_pollutant_type(P2,h2s), 
+:- attributevalue_type_pollutant_type(P1,co),
+attributevalue_type_pollutant_type(P2,h2s),
 assoc_type_deploymentenvironment_and_type_pollutant(E,P1),
 assoc_type_deploymentenvironment_and_type_pollutant(E,P2),
-assoc_type_pollutant_and_type_sensor(P2,S2), 
+assoc_type_pollutant_and_type_sensor(P2,S2),
 not attributevalue_type_sensor_upperlimit(S2,100).
 
 
-:- attributevalue_type_pollutant_type(P1,co),  
-attributevalue_type_pollutant_type(P2,h2s), 
+:- attributevalue_type_pollutant_type(P1,co),
+attributevalue_type_pollutant_type(P2,h2s),
 assoc_type_deploymentenvironment_and_type_pollutant(E,P1),
 assoc_type_deploymentenvironment_and_type_pollutant(E,P2),
-assoc_type_pollutant_and_type_sensor(P1,S1), 
+assoc_type_pollutant_and_type_sensor(P1,S1),
 not attributevalue_type_sensor_dualsensor(S1,yes).
 
-:- attributevalue_type_pollutant_type(P1,co),  
-attributevalue_type_pollutant_type(P2,h2s), 
+:- attributevalue_type_pollutant_type(P1,co),
+attributevalue_type_pollutant_type(P2,h2s),
 assoc_type_deploymentenvironment_and_type_pollutant(E,P1),
 assoc_type_deploymentenvironment_and_type_pollutant(E,P2),
-assoc_type_pollutant_and_type_sensor(P2,S2), 
+assoc_type_pollutant_and_type_sensor(P2,S2),
 not attributevalue_type_sensor_dualsensor(S2,yes).
 
 % C60: "IF DeploymentEnvironment HAS Pollutant.type=""NO"" THEN
 %  Pollutant HAS Sensor.type=""NO"""
 % -----> SAME WITH VALIDATED (C4)
 1{type_sensor(S) : attributevalue_type_sensor_type(S, no), assoc_type_pollutant_and_type_sensor(P,S)}1
-:- attributevalue_type_pollutant_type(P,no). 
+:- attributevalue_type_pollutant_type(P,no).
 
 
 % C61: "IF Sensor.type=""NO"" AND Sensor.pod=""2"" THEN
@@ -1220,7 +1221,7 @@ not attributevalue_type_sensor_dualsensor(S2,yes).
 sensor_noise1500_and_upperlimit20(S) :- attributevalue_type_sensor_noise(S,1500), attributevalue_type_sensor_upperlimit(S,20).
 sensor_noise15_and_upperlimit250(S) :- attributevalue_type_sensor_noise(S,15), attributevalue_type_sensor_upperlimit(S,250).
 
-:- attributevalue_type_sensor_type(S,no), 
+:- attributevalue_type_sensor_type(S,no),
 attributevalue_type_sensor_pod(S,2),
 not sensor_noise1500_and_upperlimit20(S),
 not sensor_noise15_and_upperlimit250(S).
@@ -1234,12 +1235,12 @@ not sensor_noise15_and_upperlimit250(S).
 % C62: "IF Pollutant.type=""NO"" AND Sensor.pod=""5"" THEN
 %  (Sensor.noise=""0,1"" AND Sensor.upperlimit=""100"")"
 % -----> SAME WITH VALIDATED (C54)
-:- attributevalue_type_pollutant_type(P1,no), 
+:- attributevalue_type_pollutant_type(P1,no),
 attributevalue_type_sensor_pod(S,5),
 assoc_type_pollutant_and_type_sensor(P1,S),
 not attributevalue_type_sensor_noise(S,10).
 
-:- attributevalue_type_pollutant_type(P1,no), 
+:- attributevalue_type_pollutant_type(P1,no),
 attributevalue_type_sensor_pod(S,5),
 assoc_type_pollutant_and_type_sensor(P1,S),
 not attributevalue_type_sensor_upperlimit(S,100).
@@ -1249,7 +1250,7 @@ not attributevalue_type_sensor_upperlimit(S,100).
 % -----> SAME WITH VALIDATED (C4)
 
 1{type_sensor(S) : attributevalue_type_sensor_type(S, so2), assoc_type_pollutant_and_type_sensor(P,S)}1
-:- attributevalue_type_pollutant_type(P,so2). 
+:- attributevalue_type_pollutant_type(P,so2).
 
 % C64: IF Sensor.type="SO2" AND Sensor.pod="2" THEN -> A
 %  (Sensor.noise="5" AND Sensor.upperlimit="100") OR -> B
@@ -1262,7 +1263,7 @@ sensor_noise200_and_upperlimit2000(S) :- attributevalue_type_sensor_noise(S,200)
 sensor_noise10_and_upperlimit100(S) :- attributevalue_type_sensor_noise(S,10), attributevalue_type_sensor_upperlimit(S,100).
 
 
-:- attributevalue_type_sensor_type(S,so2),  
+:- attributevalue_type_sensor_type(S,so2),
  attributevalue_type_sensor_pod(S,2),
 not sensor_noise500_and_upperlimit100(S),
 not sensor_noise200_and_upperlimit2000(S),
@@ -1271,12 +1272,12 @@ not sensor_noise10_and_upperlimit100(S).
 % C65: "IF Pollutant.type=""SO2"" AND Sensor.pod=""5"" THEN
 %  (Sensor.noise=""0,2"" AND Sensor.upperlimit=""20"")"
 % -----> SAME WITH VALIDATED (C54)
-  :- attributevalue_type_pollutant_type(P,so2), 
+  :- attributevalue_type_pollutant_type(P,so2),
 attributevalue_type_sensor_pod(S,5),
  assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_noise(S,20).
 
-  :- attributevalue_type_pollutant_type(P,so2), 
+  :- attributevalue_type_pollutant_type(P,so2),
 attributevalue_type_sensor_pod(S,5),
  assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_upperlimit(S,20).
@@ -1285,18 +1286,18 @@ not attributevalue_type_sensor_upperlimit(S,20).
 %  Pollutant HAS Sensor.type=""CL2"""
 % -----> SAME WITH VALIDATED (C4)
 1{type_sensor(S) : attributevalue_type_sensor_type(S, cl2), assoc_type_pollutant_and_type_sensor(P,S)}1
-:- attributevalue_type_pollutant_type(P,cl2). 
+:- attributevalue_type_pollutant_type(P,cl2).
 
 
 % C67: "IF Sensor.type=""CL2"" AND Sensor.pod=""2""
 % THEN Sensor.noise=""0,02"" AND Sensor.upperlimit=""20"""
 % -----> SAME WITH VALIDATED (C54)
-  :- attributevalue_type_pollutant_type(P,cl2), 
+  :- attributevalue_type_pollutant_type(P,cl2),
 attributevalue_type_sensor_pod(S,2),
  assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_noise(S,2).
 
-  :- attributevalue_type_pollutant_type(P,cl2), 
+  :- attributevalue_type_pollutant_type(P,cl2),
 attributevalue_type_sensor_pod(S,2),
  assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_upperlimit(S,20).
@@ -1304,12 +1305,12 @@ not attributevalue_type_sensor_upperlimit(S,20).
 % C68: "IF Pollutant.type=""CL2"" AND Sensor.pod=""5""
 %  THEN Sensor.noise=""0,1"" AND Sensor.upperlimit=""20"""
 % -----> SAME WITH VALIDATED (C54)
-  :- attributevalue_type_pollutant_type(P,cl2), 
+  :- attributevalue_type_pollutant_type(P,cl2),
 attributevalue_type_sensor_pod(S,5),
  assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_noise(S,10).
 
-  :- attributevalue_type_pollutant_type(P,cl2), 
+  :- attributevalue_type_pollutant_type(P,cl2),
 attributevalue_type_sensor_pod(S,5),
  assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_upperlimit(S,20).
@@ -1319,21 +1320,21 @@ not attributevalue_type_sensor_upperlimit(S,20).
 %  Pollutant HAS Sensor.type=""H2"""
 % -----> SAME WITH VALIDATED (C4)
 1{type_sensor(S) : attributevalue_type_sensor_type(S, h2), assoc_type_pollutant_and_type_sensor(P,S)}1
-:- attributevalue_type_pollutant_type(P,h2). 
+:- attributevalue_type_pollutant_type(P,h2).
 
 % C70: IF Sensor.type="H2" THEN Sensor.noise="0,8" AND Sensor.upperlimit="5000"
 % -----> SAME WITH VALIDATED (C54)
-  :- attributevalue_type_sensor_type(S,h2), 
+  :- attributevalue_type_sensor_type(S,h2),
 not attributevalue_type_sensor_noise(S,80).
 
-  :- attributevalue_type_sensor_type(S,h2), 
+  :- attributevalue_type_sensor_type(S,h2),
 not attributevalue_type_sensor_upperlimit(S,5000).
 
 % C71: "IF DeploymentEnvironment HAS Pollutant.type=""ETO"" THEN
 %  Pollutant HAS Sensor.type=""ETO"""
 % -----> SAME WITH VALIDATED (C4)
 1{type_sensor(S) : attributevalue_type_sensor_type(S, h2), assoc_type_pollutant_and_type_sensor(P,S)}1
-:- attributevalue_type_pollutant_type(P,h2). 
+:- attributevalue_type_pollutant_type(P,h2).
 
 
 % C72: IF Sensor.type="ETO" THEN Sensor.noise="0,1" AND Sensor.upperlimit="100"
@@ -1348,7 +1349,7 @@ not attributevalue_type_sensor_upperlimit(S,100).
 %  Pollutant HAS Sensor.type=""HCL"""
 % -----> SAME WITH VALIDATED (C4)
 1{type_sensor(S) : attributevalue_type_sensor_type(S, hcl), assoc_type_pollutant_and_type_sensor(P,S)}1
-:- attributevalue_type_pollutant_type(P,hcl). 
+:- attributevalue_type_pollutant_type(P,hcl).
 
 
 % C74: IF Sensor.type="HCL" THEN Sensor.noise="0,1" AND Sensor.upperlimit="20"
@@ -1364,7 +1365,7 @@ not attributevalue_type_sensor_upperlimit(S,20).
 %  Pollutant HAS Sensor.type=""NH3"""
 % -----> SAME WITH VALIDATED (C4)
 1{type_sensor(S) : attributevalue_type_sensor_type(S, nh3), assoc_type_pollutant_and_type_sensor(P,S)}1
-:- attributevalue_type_pollutant_type(P,nh3). 
+:- attributevalue_type_pollutant_type(P,nh3).
 
 % C76: IF Sensor.type="NH3" THEN Sensor.noise="0,3" AND Sensor.upperlimit="100"
 % -----> SAME WITH VALIDATED (C54)
@@ -1378,7 +1379,7 @@ not attributevalue_type_sensor_upperlimit(S,100).
 %  Pollutant HAS Sensor.type=""HCN"""
 % -----> SAME WITH VALIDATED (C4)
 1{type_sensor(S) : attributevalue_type_sensor_type(S, hcn), assoc_type_pollutant_and_type_sensor(P,S)}1
-:- attributevalue_type_pollutant_type(P,hcn). 
+:- attributevalue_type_pollutant_type(P,hcn).
 
 
 % C78: "IF Sensor.type=""HCN"" AND Sensor.pod=""2""
@@ -1409,7 +1410,7 @@ not attributevalue_type_sensor_upperlimit(S,50).
 %  Pollutant HAS Sensor.type=""PH3"""
 % -----> SAME WITH VALIDATED (C4)
 1{type_sensor(S) : attributevalue_type_sensor_type(S, ph3), assoc_type_pollutant_and_type_sensor(P,S)}1
-:- attributevalue_type_pollutant_type(P,ph3). 
+:- attributevalue_type_pollutant_type(P,ph3).
 
 
 % C81: "IF Sensor.type=""PH3"" THEN
@@ -1420,11 +1421,11 @@ not attributevalue_type_sensor_upperlimit(S,50).
 sensor_noise3_and_upperlimit10(S) :- attributevalue_type_sensor_noise(S,3), attributevalue_type_sensor_upperlimit(S,10).
 sensor_noise200_and_upperlimit2000(S) :- attributevalue_type_sensor_noise(S,200), attributevalue_type_sensor_upperlimit(S,2000).
 
-:- attributevalue_type_sensor_type(S,ph3), 
+:- attributevalue_type_sensor_type(S,ph3),
 not sensor_noise3_and_upperlimit10(S),
 not sensor_noise200_and_upperlimit2000(S).
 
-:- attributevalue_type_sensor_type(S,ph3), 
+:- attributevalue_type_sensor_type(S,ph3),
 not sensor_noise3_and_upperlimit10(S),
 not sensor_noise200_and_upperlimit2000(S).
 
@@ -1432,28 +1433,28 @@ not sensor_noise200_and_upperlimit2000(S).
 %  Pollutant HAS Sensor.type=""PM10""
 % -----> SAME WITH VALIDATED (C4)
 1{type_sensor(S) : attributevalue_type_sensor_type(S, pm10), assoc_type_pollutant_and_type_sensor(P,S)}1
-:- attributevalue_type_pollutant_type(P,pm10). 
+:- attributevalue_type_pollutant_type(P,pm10).
 
 
 % C83: IF DeploymentEnvironment HAS Pollutant.type=""PM2.5"" THEN
 %  Pollutant HAS Sensor.type=""PM2.5""
 % -----> SAME WITH VALIDATED (C4)
 1{type_sensor(S) : attributevalue_type_sensor_type(S, pm25), assoc_type_pollutant_and_type_sensor(P,S)}1
-:- attributevalue_type_pollutant_type(P,pm25). 
+:- attributevalue_type_pollutant_type(P,pm25).
 
 
 % C84: IF DeploymentEnvironment HAS Pollutant.type=""PM1"" THEN
 %  Pollutant HAS Sensor.type=""PM1""
 % -----> SAME WITH VALIDATED (C4)
 1{type_sensor(S) : attributevalue_type_sensor_type(S, pm1), assoc_type_pollutant_and_type_sensor(P,S)}1
-:- attributevalue_type_pollutant_type(P,pm1). 
+:- attributevalue_type_pollutant_type(P,pm1).
 
 
 % C85: IF DeploymentEnvironment HAS Pollutant.type=""PM0"" THEN
 %  Pollutant HAS Sensor.type=""PM0"""
 % -----> SAME WITH VALIDATED (C4)
 1{type_sensor(S) : attributevalue_type_sensor_type(S, pm0), assoc_type_pollutant_and_type_sensor(P,S)}1
-:- attributevalue_type_pollutant_type(P,pm0). 
+:- attributevalue_type_pollutant_type(P,pm0).
 
 % C86: "IF Pollutant.type=""PM10"" OR
 %  Pollutant.type=""PM2.5"" OR
@@ -1462,35 +1463,35 @@ not sensor_noise200_and_upperlimit2000(S).
 %  Sensor.noise=""-1"" AND Sensor.upperlimit=""-1"""
 % -----> SAME WITH VALIDATED (C10)
 
-:- attributevalue_type_pollutant_type(P,pm10), 
+:- attributevalue_type_pollutant_type(P,pm10),
 assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_noise(S,-1).
 
-:- attributevalue_type_pollutant_type(P,pm10), 
+:- attributevalue_type_pollutant_type(P,pm10),
 assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_upperlimit(S,0).
 
-:- attributevalue_type_pollutant_type(P,pm25), 
+:- attributevalue_type_pollutant_type(P,pm25),
 assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_noise(S,-1).
 
-:- attributevalue_type_pollutant_type(P,pm25), 
+:- attributevalue_type_pollutant_type(P,pm25),
 assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_upperlimit(S,-1).
 
-:- attributevalue_type_pollutant_type(P,pm1), 
+:- attributevalue_type_pollutant_type(P,pm1),
 assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_noise(S,-1).
 
-:- attributevalue_type_pollutant_type(P,pm1), 
+:- attributevalue_type_pollutant_type(P,pm1),
 assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_upperlimit(S,-1).
 
-:- attributevalue_type_pollutant_type(P,pm0), 
+:- attributevalue_type_pollutant_type(P,pm0),
 assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_noise(S,-1).
 
-:- attributevalue_type_pollutant_type(P,pm0), 
+:- attributevalue_type_pollutant_type(P,pm0),
 assoc_type_pollutant_and_type_sensor(P,S),
 not attributevalue_type_sensor_upperlimit(S,-1).
 
@@ -1498,27 +1499,27 @@ not attributevalue_type_sensor_upperlimit(S,-1).
 %  Pollutant HAS Sensor.type=""A"""
 % -----> SAME WITH VALIDATED (C4)
   1{type_sensor(S) : attributevalue_type_sensor_type(S, a), assoc_type_pollutant_and_type_sensor(P,S)}1
-:- attributevalue_type_pollutant_type(P,a). 
+:- attributevalue_type_pollutant_type(P,a).
 
 % C88: "IF DeploymentEnvironment HAS Pollutant.type=""B"" THEN
 %  Pollutant HAS Sensor.type=""B"""
 % -----> SAME WITH VALIDATED (C4)
   1{type_sensor(S) : attributevalue_type_sensor_type(S, b), assoc_type_pollutant_and_type_sensor(P,S)}1
-:- attributevalue_type_pollutant_type(P,b). 
+:- attributevalue_type_pollutant_type(P,b).
 
 
 % C89: "IF DeploymentEnvironment HAS Pollutant.type=""G"" THEN
 %  Pollutant HAS Sensor.type=""G"""
 % -----> SAME WITH VALIDATED (C4)
   1{type_sensor(S) : attributevalue_type_sensor_type(S, g), assoc_type_pollutant_and_type_sensor(P,S)}1
-:- attributevalue_type_pollutant_type(P,g). 
+:- attributevalue_type_pollutant_type(P,g).
 
 
 % C90: "IF DeploymentEnvironment HAS Pollutant.type=""Radon"" THEN
 %  Pollutant HAS Sensor.type=""Radon"""
 % -----> SAME WITH VALIDATED (C4)
   1{type_sensor(S) : attributevalue_type_sensor_type(S, radon), assoc_type_pollutant_and_type_sensor(P,S)}1
-:- attributevalue_type_pollutant_type(P,radon). 
+:- attributevalue_type_pollutant_type(P,radon).
 
 % C91: "IF Pollutant.type=""A"" OR
 %  Pollutant.type=""B"" OR
@@ -1564,15 +1565,15 @@ not attributevalue_type_sensor_upperlimit(S,0).
 %  Pollutant HAS Sensor.type=""CO2"""
 % -----> SAME WITH VALIDATED (C4)
   1{type_sensor(S) : attributevalue_type_sensor_type(S, co2), assoc_type_pollutant_and_type_sensor(P,S)}1
-:- attributevalue_type_pollutant_type(P,co2). 
+:- attributevalue_type_pollutant_type(P,co2).
 
 
 % C93: IF Sensor.type="CO2" THEN Sensor.noise="5" AND Sensor.upperlimit="5000"
 % -----> SAME WITH VALIDATED (C54)
-  :- attributevalue_type_sensor_type(S,co2), 
+  :- attributevalue_type_sensor_type(S,co2),
 not attributevalue_type_sensor_upperlimit(S,5000).
 
-  :- attributevalue_type_sensor_type(S,co2), 
+  :- attributevalue_type_sensor_type(S,co2),
 not attributevalue_type_sensor_noise(S,500).
 
 
@@ -1580,7 +1581,7 @@ not attributevalue_type_sensor_noise(S,500).
 %  Pollutant HAS Sensor.type=""CH4"""
 % -----> SAME WITH VALIDATED (C4)
   1{type_sensor(S) : attributevalue_type_sensor_type(S, ch4), assoc_type_pollutant_and_type_sensor(P,S)}1
-:- attributevalue_type_pollutant_type(P,ch4). 
+:- attributevalue_type_pollutant_type(P,ch4).
 
 
 % C95: "IF Pollutant.type=""CH4"" THEN
@@ -1595,7 +1596,7 @@ not attributevalue_type_sensor_noise(S,500).
 sensor_noise20000_and_upperlimit2(S) :- attributevalue_type_sensor_noise(S,20000), attributevalue_type_sensor_upperlimit(S,2).
 sensor_noise30000_and_upperlimit100(S) :- attributevalue_type_sensor_noise(S,30000), attributevalue_type_sensor_upperlimit(S,100).
 
-:- attributevalue_type_pollutant_type(P,ch4), 
+:- attributevalue_type_pollutant_type(P,ch4),
 assoc_type_pollutant_and_type_sensor(P,S),
 not sensor_noise20000_and_upperlimit2(S),
 not sensor_noise30000_and_upperlimit100(S).
@@ -1606,7 +1607,7 @@ not sensor_noise30000_and_upperlimit100(S).
 %  POllutant.rawmetric=""true"" AND
 %  Sensor HAS MonitoringPolicy.automaticsampling=""true"" AND
 %             MonitoringPolicy.publishrate=""1"""
-% -----> VALIDATED 
+% -----> VALIDATED
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NEW_CONSTRAINT_TYPE: C96
 % if (x or y)  then (y and has z and w) %
@@ -1813,31 +1814,127 @@ not attributevalue_type_monitoringpolicy_publishrate(M,1).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % CUSTOMER REQUIREMENTS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% INSERT 
+% INSERT
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % OUTPUTS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%
-% List all objects with 1 attributes
-%%%%%%%%%%%%
-% 1
+
+% for program
+#show type_monitoringstation/1.
 #show attributevalue_type_monitoringstation_communication/2.
-% 2
+#show attributevalue_type_monitoringstation_localstorage/2.
+#show attributevalue_type_monitoringstation_cloudstorage/2.
+#show attributevalue_type_monitoringstation_enclosure/2.
+
+#show assoc_type_monitoringstation_and_type_deploymentenvironment/2.
+
+#show type_deploymentenvironment/1.
 #show attributevalue_type_deploymentenvironment_type/2.
-% 3
+#show attributevalue_type_deploymentenvironment_context/2.
+#show attributevalue_type_deploymentenvironment_locationtype/2.
+
+#show assoc_type_deploymentenvironment_and_type_area/2.
+#show assoc_type_deploymentenvironment_and_type_pollutant/2.
+
+#show type_area/1.
 #show attributevalue_type_area_type/2.
-% 4
+#show attributevalue_type_area_category/2.
+#show attributevalue_type_area_prefabricatedbuilding/2.
+#show attributevalue_type_area_vehicletraffic/2.
+#show attributevalue_type_area_industrialtype/2.
+#show attributevalue_type_area_pollutedsoil/2.
+#show attributevalue_type_area_floor/2.
+#show attributevalue_type_area_controlledarea/2.
+#show attributevalue_type_area_airconditioning/2.
+#show attributevalue_type_area_heatingsystem/2.
+#show attributevalue_type_area_windows/2.
+#show attributevalue_type_area_smokepresence/2.
+#show attributevalue_type_area_moldpresence/2.
+#show attributevalue_type_area_dustyarea/2.
+
+#show assoc_type_area_and_type_environmetalconditions/2.
+#show assoc_type_area_and_type_walltype/2.
+
+#show type_environmetalconditions/1.
+#show attributevalue_type_environmetalconditions_humidity/2.
+#show attributevalue_type_environmetalconditions_windspeed/2.
+#show attributevalue_type_environmetalconditions_rain/2.
+#show attributevalue_type_environmetalconditions_dust/2.
 #show attributevalue_type_environmetalconditions_averagetemperature/2.
-% 5
+#show attributevalue_type_environmetalconditions_snow/2.
+#show attributevalue_type_environmetalconditions_ice/2.
+#show attributevalue_type_environmetalconditions_vibrations/2.
+#show attributevalue_type_environmetalconditions_averagepressure/2.
+
+#show type_walltype/1.
+#show attributevalue_type_walltype_wallpaper/2.
+#show attributevalue_type_walltype_plasticcladding/2.
 #show attributevalue_type_walltype_woodenpanels/2.
-% 6
+#show attributevalue_type_walltype_moquette/2.
+#show attributevalue_type_walltype_tiles/2.
+#show attributevalue_type_walltype_plaster/2.
+
+#show type_pollutant/1.
 #show attributevalue_type_pollutant_type/2.
-% 7
+#show attributevalue_type_pollutant_gas/2.
+#show attributevalue_type_pollutant_electromagnetic/2.
+#show attributevalue_type_pollutant_ionizing/2.
+#show attributevalue_type_pollutant_affectair/2.
+#show attributevalue_type_pollutant_affectwater/2.
+#show attributevalue_type_pollutant_affectsoil/2.
+#show attributevalue_type_pollutant_affectobjects/2.
+#show attributevalue_type_pollutant_ban/2.
+#show attributevalue_type_pollutant_specific/2.
+#show attributevalue_type_pollutant_metric/2.
+#show attributevalue_type_pollutant_rawmetric/2.
+
+#show assoc_type_pollutant_and_type_interferingpollutant/2.
+#show assoc_type_pollutant_and_type_sensor/2.
+
+#show type_interferingpollutant/1.
 #show attributevalue_type_interferingpollutant_type/2.
-% 8
+#show attributevalue_type_interferingpollutant_gas/2.
+#show attributevalue_type_interferingpollutant_electromagnetic/2.
+#show attributevalue_type_interferingpollutant_ionizing/2.
+#show attributevalue_type_interferingpollutant_affectair/2.
+#show attributevalue_type_interferingpollutant_affectwater/2.
+#show attributevalue_type_interferingpollutant_affectsoil/2.
+#show attributevalue_type_interferingpollutant_affectobjects/2.
+#show attributevalue_type_interferingpollutant_ban/2.
+#show attributevalue_type_interferingpollutant_explosive/2.
+#show attributevalue_type_interferingpollutant_toxic/2.
+#show attributevalue_type_interferingpollutant_dangerous/2.
+#show attributevalue_type_interferingpollutant_poisonous/2.
+#show attributevalue_type_interferingpollutant_metric/2.
+
+#show type_sensor/1.
 #show attributevalue_type_sensor_type/2.
-% 9
+#show attributevalue_type_sensor_technology/2.
+#show attributevalue_type_sensor_sensitivity/2.
+#show attributevalue_type_sensor_pod/2.
+#show attributevalue_type_sensor_range/2.
+#show attributevalue_type_sensor_resolution/2.
+#show attributevalue_type_sensor_responsetime/2.
+#show attributevalue_type_sensor_expectedoperationlife/2.
+#show attributevalue_type_sensor_minoptemperature/2.
+#show attributevalue_type_sensor_maxoptemperature/2.
+#show attributevalue_type_sensor_minophumidity/2.
+#show attributevalue_type_sensor_maxophumidity/2.
+#show attributevalue_type_sensor_minoppressure/2.
+#show attributevalue_type_sensor_maxoppressure/2.
+#show attributevalue_type_sensor_upperlimit/2.
+#show attributevalue_type_sensor_dualsensor/2.
+#show attributevalue_type_sensor_noise/2.
+
+#show assoc_type_sensor_and_type_monitoringpolicy/2.
+#show assoc_type_sensor_and_type_referencemodel/2.
+
+#show type_referencemodel/1.
 #show attributevalue_type_referencemodel_monitoringalgorithm/2.
-% 10
+
+#show type_monitoringpolicy/1.
 #show attributevalue_type_monitoringpolicy_autosampling/2.
+#show attributevalue_type_monitoringpolicy_samplingtype/2.
+#show attributevalue_type_monitoringpolicy_duration/2.
+#show attributevalue_type_monitoringpolicy_publishrate/2.
