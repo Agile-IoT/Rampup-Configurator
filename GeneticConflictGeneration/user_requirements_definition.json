@@ -221,13 +221,13 @@
 			"type": "dynamic",
 			"constraint": "attributevalue_type_environmetalconditions_humidity(1000,%s).",
 			"lowerBound": 0,
-			"upperBound": 1
+			"upperBound": 10
 		},
 		{
 			"type": "dynamic",
 			"constraint": "attributevalue_type_environmetalconditions_windspeed(1000,%s).",
 			"lowerBound": 0,
-			"upperBound": 1
+			"upperBound": 10
 		},
 		{
 			"type": "dynamic",
@@ -248,8 +248,8 @@
 		{
 			"type": "dynamic",
 			"constraint": "attributevalue_type_environmetalconditions_averagetemperature(1000,%s).",
-			"lowerBound": 0,
-			"upperBound": 1
+			"lowerBound": -50,
+			"upperBound": 50
 		},
 		{
 			"type": "dynamic",
@@ -279,7 +279,7 @@
 			"type": "dynamic",
 			"constraint": "attributevalue_type_environmetalconditions_averagepressure(1000,%s).",
 			"lowerBound": 0,
-			"upperBound": 1
+			"upperBound": 10
 		},
 		{
 			"type": "static",

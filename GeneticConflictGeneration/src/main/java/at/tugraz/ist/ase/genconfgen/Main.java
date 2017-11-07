@@ -18,9 +18,11 @@ import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -134,7 +136,9 @@ public class Main {
 			ClingoExecutor clingoExecutor = new ClingoExecutor(clingoPath, programPath, 1);
 			ArrayList<Integer> conflictIndices = new ArrayList<Integer>();
 			ArrayList<ArrayList<String>> conflictSets = new ArrayList<ArrayList<String>>();
+			long startTime = System.currentTimeMillis();
 			for (int i = 0; i < populationSize; i++) {
+				printProgress(startTime, populationSize, i + 1);
 				ArrayList<String> constraints = new ArrayList<String>();
 				int j = 0;
 				for (UserRequirementDefinition userRequirementDefinition : userRequirements) {
@@ -147,12 +151,13 @@ public class Main {
 						constraints.add(userRequirementDefinition.getConstraint());
 					}
 				}
-				if (!clingoExecutor.isConsistent(constraints)) {
+				if (hasKnownConflict(constraints, allMinConflictSets) || !clingoExecutor.isConsistent(constraints)) {
 //					System.out.println("Conflicting individual " + i + ": " + constraints.toString());
 					conflictIndices.add(i);
 					conflictSets.add(constraints);
 				}
 			}
+			System.out.println();
 			System.out.println("GENERATION " + generation + ": Found " + conflictSets.size() + " conflicting individuals.");
 			
 			// determine (all) minimal conflict sets of all conflicting individuals
@@ -160,13 +165,19 @@ public class Main {
 			System.out.println("GENERATION " + generation + ": Generating minimal conflict sets for conflicting individuals ...");
 			QuickXPlain quickXPlain = new QuickXPlain(clingoExecutor);
 			ArrayList<ArrayList<String>> minConflictSets = new ArrayList<ArrayList<String>>();
-//			int i = 0;
+			int i = 0;
+			startTime = System.currentTimeMillis();
 			for (ArrayList<String> conflictSet : conflictSets) {
-				ArrayList<String> minConflictSet = quickXPlain.quickXPlain(conflictSet, "");
+				printProgress(startTime, conflictSets.size(), i + 1);
+				ArrayList<String> minConflictSet = getKnownConflict(conflictSet, allMinConflictSets);
+				if (minConflictSet == null) {
+					minConflictSet = quickXPlain.quickXPlain(conflictSet, "");
+				}
 				minConflictSets.add(minConflictSet);
 //				System.out.println("Minimal conflict set for individual " + conflictIndices.get(i) + ": " + minConflictSet);
-//				i++;
+				i++;
 			}
+			System.out.println();
 			System.out.println("GENERATION " + generation + ": Found " + minConflictSets.size() + " unique minimal conflict sets in this round.");
 			int knownMinConflictsBefore = allMinConflictSets.size();
 			allMinConflictSets.addAll(minConflictSets);
@@ -177,6 +188,7 @@ public class Main {
 			// creating healed individuals by cloning conflicting individuals times the number
 			// of entries in the respective minimal conflict set and healing each of these
 			// individuals by removing one part of the respective minimal conflict set
+			// TODO maybe only mutate the respective conflict set part?
 			ArrayList<ArrayList<String>> healedConflictSets = new ArrayList<ArrayList<String>>();
 			for (int j = 0; j < minConflictSets.size(); j++) {
 				for (String minConflictSetPart : minConflictSets.get(j)) {
@@ -187,14 +199,6 @@ public class Main {
 			}
 			System.out.println("GENERATION " + generation + ": Created " + healedConflictSets.size() + " healed individuals from "
 					+ conflictSets.size() + " conflicting individuals.");
-			//		for (ArrayList<String> testIndividual : healedConflictSets) {
-			//			System.out.println(testIndividual.toString());
-			//			if (clingoExecutor.isConsistent(testIndividual)) {
-			//				System.out.println("TESTING: YES");
-			//			} else {
-			//				System.out.println("TESTING: OH NO! °_°");
-			//			}
-			//		}
 			// put them into array notation
 			String[][] parentGeneration;
 			//if (!healedConflictSets.isEmpty() && binomial(healedConflictSets.size(), 2) > populationSize / 2) {
@@ -265,6 +269,27 @@ public class Main {
 		}
 	}
 
+	// from https://stackoverflow.com/a/39257969/480370
+	private static void printProgress(long startTime, int total, int current) {
+		long eta = current == 0 ? 0 : (total - current) * (System.currentTimeMillis() - startTime) / current;
+
+		String etaHms = current == 0 ? "N/A"
+				: String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(eta),
+						TimeUnit.MILLISECONDS.toMinutes(eta) % TimeUnit.HOURS.toMinutes(1),
+						TimeUnit.MILLISECONDS.toSeconds(eta) % TimeUnit.MINUTES.toSeconds(1));
+
+		StringBuilder string = new StringBuilder(140);
+		int percent = (int) (current * 100 / total);
+		string.append('\r')
+				.append(String.join("", Collections.nCopies(percent == 0 ? 2 : 2 - (int) (Math.log10(percent)), " ")))
+				.append(String.format(" %d%% [", percent)).append(String.join("", Collections.nCopies(percent, "=")))
+				.append('>').append(String.join("", Collections.nCopies(100 - percent, " "))).append(']')
+				.append(String.join("", Collections.nCopies((int) (Math.log10(total)) - (int) (Math.log10(current)), " ")))
+				.append(String.format(" %d/%d, ETA: %s", current, total, etaHms));
+
+		System.out.print(string);
+	}
+
 	private static void mutateGeneration(String[][] population, ArrayList<UserRequirementDefinition> dynamicUserRequirements) {
 		for (int j = 0; j < population.length; j++) {
 			for (int k = 0; k < population[j].length; k++) {
@@ -286,17 +311,21 @@ public class Main {
 	}
 
 	private static boolean hasKnownConflict(ArrayList<String> newIndividualConstraints, HashSet<ArrayList<String>> allMinConflictSets) {
-		// parse new individual into right format
+		if (getKnownConflict(newIndividualConstraints, allMinConflictSets) == null) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	private static ArrayList<String> getKnownConflict(ArrayList<String> constraints, HashSet<ArrayList<String>> allMinConflictSets) {
 		for (ArrayList<String> currentConflictSet : allMinConflictSets) {
-			for (String constraint : currentConflictSet) {
-				if (!newIndividualConstraints.contains(constraint)) {
-					break;
-				}
-				return true;
+			if (constraints.containsAll(currentConflictSet)) {
+				return currentConflictSet;
 			}
 		}
 		
-		return false;
+		return null;
 	}
 
 	private static String[] geneticCrossover(String[] father, String[] mother) {

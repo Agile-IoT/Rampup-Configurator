@@ -4,7 +4,7 @@
 
   <groupId>at.tugraz.ist.ase</groupId>
   <artifactId>GeneticConflictGeneration</artifactId>
-  <version>0.0.1</version>
+  <version>0.1</version>
   <packaging>jar</packaging>
 
   <name>GeneticConflictGeneration</name>
