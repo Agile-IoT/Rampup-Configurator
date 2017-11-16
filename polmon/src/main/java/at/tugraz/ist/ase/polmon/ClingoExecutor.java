@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import at.tugraz.ist.ase.polmon.classes.Area;
 import at.tugraz.ist.ase.polmon.classes.DeploymentEnvironment;
@@ -35,11 +36,13 @@ public class ClingoExecutor {
 	private String pathToClingo;
 	private String pathToProgram;
 	private int numOfResults;
+	private HashSet<ArrayList<String>> allMinConflictSets;
 
-	public ClingoExecutor(String pathToClingo, String pathToProgram, int numOfResults) {
+	public ClingoExecutor(String pathToClingo, String pathToProgram, int numOfResults, HashSet<ArrayList<String>> allMinConflictSets) {
 		this.pathToClingo = pathToClingo;
 		this.pathToProgram = pathToProgram;
 		this.numOfResults = numOfResults;
+		this.allMinConflictSets = allMinConflictSets;
 	}
 
 	public ArrayList<MonitoringStation> executeWithUserRequirements(MonitoringStation userRequirements) {
@@ -47,24 +50,72 @@ public class ClingoExecutor {
 		String basicProgram = getClingoProgram();
 		// make program out of user requirements
 		String userReqProgram = generateUserReqProgram(userRequirements);
-		String finalProgram = basicProgram.replaceAll("% PARSER_UserRequirements", userReqProgram);
+		if (hasKnownConflict(userRequirements)) {
+			return new ArrayList<MonitoringStation>();
+		} else {
+			String finalProgram = basicProgram.replaceAll("% PARSER_UserRequirements", userReqProgram);
 
-		// call executeClingo with program
-		String clingoOutput = executeClingo(finalProgram);
-		
-		return parseClingoOutput(clingoOutput);
+			// call executeClingo with program
+			String clingoOutput = executeClingo(finalProgram);
+			
+			return parseClingoOutput(clingoOutput);
+		}
 	}
 	
+	private boolean hasKnownConflict(MonitoringStation userRequirements) {
+		return hasKnownConflict(createUserConstraintList(userRequirements));
+	}
+	
+	private boolean hasKnownConflict(ArrayList<String> userRequirementsList) {
+		for (ArrayList<String> currentConflictSet : allMinConflictSets) {
+			if (userRequirementsList.containsAll(currentConflictSet)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public ArrayList<String> createDiagnosis (MonitoringStation userRequirements, ArrayList<String> preferredRequirementsList) {
 		ArrayList<String> userConstraintList = createUserConstraintList(userRequirements);
 		
 		// if isEmpty(C) or inconsistent(AC – C) return null
-		if (userConstraintList.isEmpty() || !isConsistent(getClingoProgram())) {
+		ArrayList<String> clingoProgram = new ArrayList<String>();
+		clingoProgram.add(getClingoProgram());
+		if (userConstraintList.isEmpty() || !isConsistent(clingoProgram)) {
 			return null;
 		// else return FD(null, C, AC);
 		} else {
+			// making use of already known minimal conflict sets
+			ArrayList<String> chosenMinConflictSet = new ArrayList<String>();
+			for (ArrayList<String> currentMinConflictSet : allMinConflictSets) {
+				if (userConstraintList.containsAll(currentMinConflictSet)) {
+					chosenMinConflictSet.addAll(currentMinConflictSet);
+					break;
+				}
+			}
+			if (!chosenMinConflictSet.isEmpty()) {
+				ArrayList<String> conflictSetPartsToRemove = new ArrayList<String>();
+				for (String chosenMinConflictSetPart : chosenMinConflictSet) {
+					for (String preferredRequirement : preferredRequirementsList) {
+						if (chosenMinConflictSetPart.matches(preferredRequirement)) {
+							conflictSetPartsToRemove.add(chosenMinConflictSetPart);
+						}
+					}
+				}
+				chosenMinConflictSet.removeAll(conflictSetPartsToRemove);
+
+				if (chosenMinConflictSet.size() == 1) {
+					return chosenMinConflictSet;
+				} else {
+					ArrayList<String> returnedDiagnosis = new ArrayList<String>();
+					returnedDiagnosis.add(chosenMinConflictSet.get(0));
+					return returnedDiagnosis;
+				}
+			}
+			
+			// continuing with classic FastDiag
 			ArrayList<String> ac = new ArrayList<String>();
-			ac.add(getClingoProgram());
+			ac.addAll(clingoProgram);
 			ac.addAll(userConstraintList);
 			
 			if (!preferredRequirementsList.isEmpty()) {
@@ -102,11 +153,15 @@ public class ClingoExecutor {
 		}
 	}
 	private boolean isConsistent(ArrayList<String> constraints) {
-		String program = "";
-		for (String constraint : constraints) {
-			program += constraint + "\n";
+		if (hasKnownConflict(constraints)) {
+			return false;
+		} else {
+			String program = "";
+			for (String constraint : constraints) {
+				program += constraint + "\n";
+			}
+			return isConsistent(program);
 		}
-		return isConsistent(program);
 	}
 	
 	private ArrayList<String> subtract(ArrayList<String> first, ArrayList<String> second) {
