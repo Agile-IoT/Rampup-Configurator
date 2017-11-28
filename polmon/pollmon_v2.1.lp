@@ -1,8 +1,10 @@
-% to execute the program please use Clingo from http://potassco.sourceforge.net/
-% which is combines Gringo and Claps in a monolithic way;
-% use the following command line:  clingo.exe pollmon_v2.1.lp
-% implemented by Seda Polat Erdeniz
-% last edit 03.10.2017 by SPE
+% Copyright (c) 2017-11-28 Seda Polat-Erdeniz & Christoph Uran (TU Graz)
+%
+% This program and the accompanying materials are made
+% available under the terms of the Eclipse Public License 2.0
+% which is available at https://www.eclipse.org/legal/epl-2.0/
+%
+% SPDX-License-Identifier: EPL-2.0
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % types of CLASSES
@@ -421,7 +423,7 @@ attributedomain_type_monitoringpolicy_publishrate(0;1).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % CONSTRAINTS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% C1: DeploymentEnvironment.locationType=”Urban” CONFLICTS Area.Category=”Countryfield”
+% C1: DeploymentEnvironment.locationType=â€�Urbanâ€� CONFLICTS Area.Category=â€�Countryfieldâ€�
 % ----->  VALIDATED
 :- attributevalue_type_deploymentenvironment_locationtype(E,urban), attributevalue_type_area_category(A,countryfield), assoc_type_deploymentenvironment_and_type_area(E,A).
 
