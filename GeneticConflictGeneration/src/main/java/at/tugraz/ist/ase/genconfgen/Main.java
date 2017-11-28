@@ -40,6 +40,7 @@ public class Main {
 	private static int populationSize = 100;
 	private static int numOfPopulations = 1;
 	private static double mutationProbability = 0.1;
+	private static int numOfGenerations = 100;
 
 	public static void main(String[] args) {
 		HashSet<ArrayList<String>> allMinConflictSets;
@@ -62,6 +63,7 @@ public class Main {
 		populationSize = Integer.parseInt(properties.getProperty("population_size", populationSize + ""));
 		numOfPopulations = Integer.parseInt(properties.getProperty("num_of_populations", numOfPopulations + ""));
 		mutationProbability = Double.parseDouble(properties.getProperty("mutation_probability", mutationProbability + ""));
+		numOfGenerations = Integer.parseInt(properties.getProperty("num_of_generations", numOfGenerations + ""));
 		
 		// parse user requirements definition
 		ArrayList<UserRequirementDefinition> userRequirements = parseUserRequirementsDefinition();
@@ -138,7 +140,7 @@ public class Main {
 			ArrayList<ArrayList<String>> conflictSets = new ArrayList<ArrayList<String>>();
 			long startTime = System.currentTimeMillis();
 			for (int i = 0; i < populationSize; i++) {
-				printProgress(startTime, populationSize, i + 1);
+//				printProgress(startTime, populationSize, i + 1);
 				ArrayList<String> constraints = new ArrayList<String>();
 				int j = 0;
 				for (UserRequirementDefinition userRequirementDefinition : userRequirements) {
@@ -168,7 +170,7 @@ public class Main {
 			int i = 0;
 			startTime = System.currentTimeMillis();
 			for (ArrayList<String> conflictSet : conflictSets) {
-				printProgress(startTime, conflictSets.size(), i + 1);
+//				printProgress(startTime, conflictSets.size(), i + 1);
 				ArrayList<String> minConflictSet = getKnownConflict(conflictSet, allMinConflictSets);
 				if (minConflictSet == null) {
 					minConflictSet = quickXPlain.quickXPlain(conflictSet, "");
@@ -265,6 +267,10 @@ public class Main {
 //				System.err.println("GENERATION " + generation + ": Stopping due to an insufficient number of parents to generate new generation.");
 				System.out.println("GENERATION " + generation + ": Mutating and repeating this generation due to no conflicts ...");
 				mutateGeneration(population, dynamicUserRequirements);
+			}
+			
+			if (generation > numOfGenerations) {
+				doStop = true;
 			}
 		}
 	}
