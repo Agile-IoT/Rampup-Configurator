@@ -64,7 +64,7 @@ public class DiagSvc {
 		pathToProgram = properties.getProperty("program_path");
 		numOfResults = Integer.parseInt(properties.getProperty("num_of_solutions", "10"));
 		
-		// the all the known minimal conflict sets
+		// all the known minimal conflict sets
 		String pathToMinConflictSetFiles = properties.getProperty("min_conflict_set_dir_path");
 		allMinConflictSets = new HashSet<ArrayList<String>>();
 		Gson minConflictSetGson = new Gson();
